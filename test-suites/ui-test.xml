@@ -1,0 +1,21 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="UI Test Suite" verbose="1">
+
+    <parameter name="environment" value="qa"/>
+    <parameter name="browser" value="chrome"/>
+    <parameter name="headless" value="false"/>
+
+    <test name="UI Functional Tests">
+        <groups>
+            <run>
+                <include name="ui"/>
+                <include name="functional"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.company.ecommerce.ui.UserManagementTests"/>
+            <class name="com.company.ecommerce.ui.ProductTests"/>
+        </classes>
+    </test>
+
+</suite>

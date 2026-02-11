@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Full Test Suite" verbose="1" parallel="tests" thread-count="5">
+
+    <parameter name="environment" value="qa"/>
+
+    <suite-files>
+        <suite-file path="test-suites/smoke-test.xml"/>
+        <suite-file path="test-suites/regression-test.xml"/>
+        <suite-file path="test-suites/api-test.xml"/>
+        <suite-file path="test-suites/ui-test.xml"/>
+    </suite-files>
+
+</suite>

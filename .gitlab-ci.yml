@@ -1,0 +1,70 @@
+stages:
+  - test
+  - report
+  - deploy
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+
+smoke-tests:
+  stage: test
+  script:
+    - echo "运行冒烟测试..."
+    - mvn clean test -DsuiteXmlFile=test-suites/smoke-test.xml -Denvironment=qa
+  artifacts:
+    paths:
+      - target/surefire-reports/
+      - test-reports/
+    when: always
+  only:
+    - merge_requests
+    - main
+
+regression-tests:
+  stage: test
+  script:
+    - echo "运行回归测试..."
+    - mvn clean test -DsuiteXmlFile=test-suites/regression-test.xml -Denvironment=qa
+  artifacts:
+    paths:
+      - target/surefire-reports/
+      - test-reports/
+    when: always
+  only:
+    - schedules
+    - tags
+
+api-tests:
+  stage: test
+  script:
+    - echo "运行API测试..."
+    - mvn clean test -DsuiteXmlFile=test-suites/api-test.xml -Denvironment=qa
+  artifacts:
+    paths:
+      - target/surefire-reports/
+    when: always
+
+generate-reports:
+  stage: report
+  script:
+    - echo "生成测试报告..."
+    - mvn site
+  artifacts:
+    paths:
+      - target/site/
+    when: always
+  only:
+    - main
+
+deploy-reports:
+  stage: deploy
+  script:
+    - echo "部署测试报告到S3..."
+    - aws s3 sync test-reports/ s3://test-reports-bucket/$CI_PIPELINE_ID/
+  only:
+    - main

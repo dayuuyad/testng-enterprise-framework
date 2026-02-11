@@ -1,0 +1,57 @@
+# Project files
+*.iml
+*.ipr
+*.iws
+*.DS_Store
+*.log
+*.tmp
+*.bak
+
+# Build directories
+target/
+build/
+out/
+bin/
+.classpath
+.project
+.settings/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Test results
+test-results/screenshots/*.png
+test-results/html-reports/*
+!test-results/html-reports/.gitkeep
+test-results/xml-reports/*
+!test-results/xml-reports/.gitkeep
+
+# Logs
+logs/
+*.log
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+.m2/
+
+# Environment files
+.env
+.env.local
+
+# Drivers
+drivers/
+*.exe
+
+# Temporary files
+temp/
+tmp/
+
+# Secrets
+**/secrets.properties
+**/credentials.*
+**/passwords.*
+**/*.pem
+**/*.key

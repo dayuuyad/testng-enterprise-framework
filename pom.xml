@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.company.ecommerce</groupId>
+    <artifactId>testng-enterprise-framework</artifactId>
+    <version>2.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>TestNG Enterprise Automation Framework</name>
+    <description>Enterprise Test Automation Framework using TestNG - Java 21 Compatible</description>
+
+    <properties>
+        <!-- Java 21 支持 -->
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        
+        <!-- Dependency Versions (Updated to latest stable as of 2024) -->
+        <testng.version>7.11.0</testng.version>                    <!-- Latest: Feb 2024 -->
+        <selenium.version>4.40.0</selenium.version>               <!-- Latest: Feb 2024 -->
+        <rest-assured.version>5.4.0</rest-assured.version>        <!-- Latest: Jan 2024 -->
+        <byte-buddy.version>1.14.13</byte-buddy.version>
+
+
+        <!-- 替换 ExtentReports 为 Allure（更活跃的社区） -->
+<!--        <allure-testng.version>2.25.0</allure-testng.version>     &lt;!&ndash; Latest: Feb 2024 &ndash;&gt;-->
+        
+        <!-- Logging -->
+        <slf4j.version>2.0.17</slf4j.version>                     <!-- Latest: Jan 2024 -->
+        <logback.version>1.4.14</logback.version>                 <!-- Latest: Jan 2024 -->
+        
+        <!-- Utilities -->
+        <lombok.version>1.18.32</lombok.version>                  <!-- Latest: Jan 2024 -->
+        <jackson.version>2.16.1</jackson.version>                 <!-- Latest: Jan 2024 -->
+        
+        <!-- Excel Handling -->
+        <poi.version>5.2.5</poi.version>                          <!-- Latest: Dec 2023 -->
+        
+        <!-- Database -->
+        <mysql.version>8.3.0</mysql.version>                      <!-- Latest: Jan 2024 -->
+        
+        <!-- WebDriver Management -->
+        <webdrivermanager.version>5.8.0</webdrivermanager.version> <!-- Latest: Feb 2024 -->
+        
+        <!-- Test Data Generation -->
+        <faker.version>1.0.2</faker.version>
+        
+        <!-- Apache Commons -->
+        <commons-lang3.version>3.14.0</commons-lang3.version>     <!-- Latest: Jan 2024 -->
+        <commons-io.version>2.15.1</commons-io.version>           <!-- Latest: Jan 2024 -->
+        
+        <!-- JUnit 5 (用于可能需要的单元测试) -->
+        <junit-jupiter.version>5.10.2</junit-jupiter.version>     <!-- Latest: Jan 2024 -->
+        
+        <!-- Java 21 新特性支持 -->
+        <byte-buddy.version>1.14.12</byte-buddy.version>          <!-- Java 21 兼容 -->
+    </properties>
+
+    <dependencies>
+        <!-- ========== 测试框架 ========== -->
+        <!-- TestNG - 主测试框架 -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ========== Web 自动化 ========== -->
+        <!-- Selenium WebDriver -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-http-jdk-client</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <!-- Selenium HTTP Java 21 Client (解决 Java 21 兼容性问题) -->
+<!--        <dependency>-->
+<!--            <groupId>org.seleniumhq.selenium</groupId>-->
+<!--            <artifactId>selenium-http-jdk-client</artifactId>-->
+<!--            <version>${selenium.version}</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy-agent</artifactId>
+            <version>${byte-buddy.version}</version>
+        </dependency>
+        <!-- ========== API 测试 ========== -->
+        <!-- REST Assured -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ========== 测试报告 ========== -->
+        <!-- Allure TestNG 适配器 (替代 ExtentReports) -->
+<!--        <dependency>-->
+<!--            <groupId>io.qameta.allure</groupId>-->
+<!--            <artifactId>allure-testng</artifactId>-->
+<!--            <version>${allure-testng.version}</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>com.aventstack</groupId>
+            <artifactId>extentreports</artifactId>
+            <version>5.1.1</version>
+        </dependency>
+
+        <!-- ========== 日志框架 ========== -->
+        <!-- SLF4J API -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        
+        <!-- Logback 实现 -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- ========== 工具库 ========== -->
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JSON 处理 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <!-- Excel 处理 -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+
+        <!-- ========== 数据库 ========== -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
+
+        <!-- ========== 测试数据生成 ========== -->
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>${faker.version}</version>
+        </dependency>
+
+        <!-- ========== WebDriver 管理 ========== -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>${webdrivermanager.version}</version>
+        </dependency>
+
+        <!-- ========== Apache Commons ========== -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+
+        <!-- ========== 单元测试 (可选) ========== -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ========== Java 21 兼容性 ========== -->
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>${byte-buddy.version}</version>
+        </dependency>
+        
+        <!-- Guava (实用工具) -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>32.1.3-jre</version>
+        </dependency>
+
+
+        <!-- 图像处理（用于截图合并和缩略图） -->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.sanselan</groupId>-->
+<!--            <artifactId>sanselan</artifactId>-->
+<!--            <version>0.97-incubator</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+
+        <!-- 或者使用更现代的库 -->
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-core</artifactId>
+            <version>3.10.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-jpeg</artifactId>
+            <version>3.10.1</version>
+            <scope>test</scope>
+        </dependency>
+
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Maven 编译器插件 (支持 Java 21) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.12.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <compilerArgs>
+                        <!-- Java 21 预览特性 (如果需要的话) -->
+                        <!-- <arg>enable-preview</arg> -->
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+
+            <!-- TestNG 插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>test-suites/smoke-test.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <systemPropertyVariables>
+                        <environment>qa</environment>
+                        <browser>chrome</browser>
+                        <headless>false</headless>
+                    </systemPropertyVariables>
+                    <argLine>
+                        -Xmx2g 
+                        -XX:MaxPermSize=512m
+                        -Dfile.encoding=UTF-8
+                        --add-opens java.base/java.lang=ALL-UNNAMED
+                        --add-opens java.base/java.util=ALL-UNNAMED
+                        --add-opens java.base/java.net=ALL-UNNAMED
+                    </argLine>
+                    <parallel>methods</parallel>
+                    <threadCount>3</threadCount>
+                    <perCoreThreadCount>true</perCoreThreadCount>
+                    <reuseForks>true</reuseForks>
+                    <forkCount>3</forkCount>
+                    <reportsDirectory>${project.basedir}/test-results/xml-reports</reportsDirectory>
+                    <properties>
+                        <property>
+                            <name>usedefaultlisteners</name>
+                            <value>false</value>
+                        </property>
+                    </properties>
+                </configuration>
+            </plugin>
+
+            <!-- Allure 报告插件 -->
+<!--            <plugin>-->
+<!--                <groupId>io.qameta.allure</groupId>-->
+<!--                <artifactId>allure-maven</artifactId>-->
+<!--                <version>2.12.0</version>-->
+<!--                <configuration>-->
+<!--                    <reportVersion>${allure-testng.version}</reportVersion>-->
+<!--                    <resultsDirectory>${project.basedir}/allure-results</resultsDirectory>-->
+<!--                    <reportDirectory>${project.basedir}/test-results/allure-report</reportDirectory>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+
+            <!-- JaCoCo 代码覆盖率 -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- 开发环境 -->
+        <profile>
+            <id>dev</id>
+            <properties>
+                <environment>dev</environment>
+            </properties>
+        </profile>
+        
+        <!-- 测试环境 (默认) -->
+        <profile>
+            <id>qa</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <environment>qa</environment>
+            </properties>
+        </profile>
+        
+        <!-- 预生产环境 -->
+        <profile>
+            <id>staging</id>
+            <properties>
+                <environment>staging</environment>
+            </properties>
+        </profile>
+        
+        <!-- 生产环境 -->
+        <profile>
+            <id>production</id>
+            <properties>
+                <environment>production</environment>
+            </properties>
+        </profile>
+        
+        <!-- Java 21 预览特性 (如果需要) -->
+        <profile>
+            <id>java21-preview</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <compilerArgs>
+                                <arg>--enable-preview</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <argLine>--enable-preview</argLine>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
