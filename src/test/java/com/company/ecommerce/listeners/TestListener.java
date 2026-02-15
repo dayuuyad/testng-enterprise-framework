@@ -40,7 +40,7 @@ public class TestListener implements ITestListener, IInvokedMethodListener {
     @Override
     public void onTestFailure(ITestResult result) {
         System.out.println("✗ 测试失败: " + result.getName());
-        ScreenshotUtils.capture(result.getName());
+//        ScreenshotUtils.capture(result.getName());
         ExtentReportManager.logFail(result.getThrowable());
     }
 

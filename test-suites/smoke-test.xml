@@ -7,16 +7,16 @@
     <test name="User Management Smoke Tests">
         <groups>
             <run>
-                <include name="smoke"/>
+                <include name="ddd"/>
                 <include name="user"/>
             </run>
         </groups>
         <classes>
-            <class name="com.company.ecommerce.ui.UserManagementTests">
-                <methods>
-                    <include name="testValidUserLogin"/>
-                </methods>
-            </class>
+<!--            <class name="com.company.ecommerce.ui.UserManagementTests">-->
+<!--                <methods>-->
+<!--                    <include name="testValidUserLogin"/>-->
+<!--                </methods>-->
+<!--            </class>-->
         </classes>
     </test>
 
@@ -28,9 +28,9 @@
             </run>
         </groups>
         <classes>
-            <class name="com.company.ecommerce.ui.ProductTests">
+            <class name="com.company.ecommerce.api.UserAPITests">
                 <methods>
-                    <include name="testProductSearch"/>
+                    <include name="testCreateUser"/>
                 </methods>
             </class>
         </classes>

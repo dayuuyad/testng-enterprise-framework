@@ -3,13 +3,15 @@ package com.company.ecommerce.api;
 
 import com.company.ecommerce.base.BaseAPITest;
 import com.company.ecommerce.models.User;
-import com.company.ecommerce.utils.TestDataProvider;
+import com.company.ecommerce.utils.testdata.TestDataProvider;
 import io.restassured.response.Response;
 import org.testng.annotations.*;
 
+import static com.company.ecommerce.constants.ContractEndpoint.*;
 import static io.restassured.RestAssured.given;
 
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class UserAPITests extends BaseAPITest {
 
@@ -23,17 +25,17 @@ public class UserAPITests extends BaseAPITest {
     public void testCreateUser() {
         // Given
         testUser = TestDataProvider.createTestUser();
-
+//        logger.info(testUser.toString());
         // When
-        Response response = givenAuth()
-                .body(testUser)
-                .post("/users");
+        Response response = givenAuth(testUser)
+                .post(CREATE_USER);
 
         // Then
         response.then()
-                .statusCode(201)
+                .statusCode(200)
+                .body("id", equalTo(1))
                 .body("id", notNullValue())
-                .body("username", equalTo(testUser.getUsername()))
+                .body("username", equalTo(testUser.getDisplayName()))
                 .body("email", equalTo(testUser.getEmail()));
 
         createdUserId = response.jsonPath().getLong("id");
@@ -55,7 +57,7 @@ public class UserAPITests extends BaseAPITest {
         response.then()
                 .statusCode(200)
                 .body("id", equalTo(createdUserId.intValue()))
-                .body("username", equalTo(testUser.getUsername()));
+                .body("username", equalTo(testUser.getDisplayName()));
     }
 
     @Test(

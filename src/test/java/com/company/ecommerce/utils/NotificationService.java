@@ -1,11 +1,11 @@
 package com.company.ecommerce.utils;
 
 //import com.company.ecommerce.utils.ConfigManager;
+import com.company.ecommerce.config.ConfigManager;
 import org.testng.ITestResult;
 import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.*;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,8 +15,8 @@ import java.util.Map;
  */
 public class NotificationService {
 
-    private static final ConfigManagerbak config = ConfigManagerbak.getInstance();
-    private static final boolean ENABLED = config.getBoolean("notifications.enabled", false);
+    private static final ConfigManager config = new ConfigManager();
+    private static final boolean ENABLED = config.getBooleanProperty("notifications.enabled", false);
     private static final String NOTIFICATION_TYPE = config.getProperty("notifications.type", "email");
 
     // 通知模板
@@ -125,8 +125,8 @@ public class NotificationService {
         String password = config.getProperty("email.password");
         String from = config.getProperty("email.from", username);
         String to = config.getProperty("email.to");
-        boolean useSSL = config.getBoolean("email.ssl", true);
-        boolean useTLS = config.getBoolean("email.tls", true);
+        boolean useSSL = config.getBooleanProperty("email.ssl", true);
+        boolean useTLS = config.getBooleanProperty("email.tls", true);
 
         if (to == null || to.isEmpty()) {
             System.err.println("未配置收件人邮箱 (email.to)");
@@ -158,44 +158,44 @@ public class NotificationService {
             message.setSubject("🚨 测试失败: " + data.get("testName"));
 
             // 创建多部分消息
-            MimeMultipart multipart = new MimeMultipart("alternative");
-
-            // 纯文本部分
-            MimeBodyPart textPart = new MimeBodyPart();
-            String textContent = String.format(FAILURE_TEMPLATE,
-                    data.get("testName"),
-                    data.get("timestamp"),
-                    data.get("errorMessage"),
-                    data.get("stackTrace"),
-                    data.get("environment"),
-                    data.get("project"));
-            textPart.setText(textContent);
-
-            // HTML 部分
-            MimeBodyPart htmlPart = new MimeBodyPart();
-            String htmlContent = String.format(HTML_FAILURE_TEMPLATE,
-                    data.get("testName"),
-                    data.get("timestamp"),
-                    data.get("errorMessage"),
-                    data.get("environment"),
-                    data.get("project"),
-                    data.get("stackTrace"));
-            htmlPart.setContent(htmlContent, "text/html; charset=utf-8");
-
-            multipart.addBodyPart(textPart);
-            multipart.addBodyPart(htmlPart);
-
-            // 附加截图（如果存在）
-            String screenshotPath = "screenshots/" + data.get("testName") + ".png";
-            File screenshot = new File(screenshotPath);
-            if (screenshot.exists()) {
-                MimeBodyPart attachmentPart = new MimeBodyPart();
-                attachmentPart.attachFile(screenshot);
-                attachmentPart.setFileName("failure-screenshot.png");
-                multipart.addBodyPart(attachmentPart);
-            }
-
-            message.setContent(multipart);
+//            MimeMultipart multipart = new MimeMultipart("alternative");
+//
+//            // 纯文本部分
+//            MimeBodyPart textPart = new MimeBodyPart();
+//            String textContent = String.format(FAILURE_TEMPLATE,
+//                    data.get("testName"),
+//                    data.get("timestamp"),
+//                    data.get("errorMessage"),
+//                    data.get("stackTrace"),
+//                    data.get("environment"),
+//                    data.get("project"));
+//            textPart.setText(textContent);
+//
+//            // HTML 部分
+//            MimeBodyPart htmlPart = new MimeBodyPart();
+//            String htmlContent = String.format(HTML_FAILURE_TEMPLATE,
+//                    data.get("testName"),
+//                    data.get("timestamp"),
+//                    data.get("errorMessage"),
+//                    data.get("environment"),
+//                    data.get("project"),
+//                    data.get("stackTrace"));
+//            htmlPart.setContent(htmlContent, "text/html; charset=utf-8");
+//
+//            multipart.addBodyPart(textPart);
+//            multipart.addBodyPart(htmlPart);
+//
+//            // 附加截图（如果存在）
+//            String screenshotPath = "screenshots/" + data.get("testName") + ".png";
+//            File screenshot = new File(screenshotPath);
+//            if (screenshot.exists()) {
+//                MimeBodyPart attachmentPart = new MimeBodyPart();
+//                attachmentPart.attachFile(screenshot);
+//                attachmentPart.setFileName("failure-screenshot.png");
+//                multipart.addBodyPart(attachmentPart);
+//            }
+//
+//            message.setContent(multipart);
             Transport.send(message);
 
             System.out.println("邮件通知已发送至: " + to);

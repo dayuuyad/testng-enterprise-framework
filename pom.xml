@@ -26,6 +26,7 @@
         <selenium.version>4.40.0</selenium.version>               <!-- Latest: Feb 2024 -->
         <rest-assured.version>5.4.0</rest-assured.version>        <!-- Latest: Jan 2024 -->
         <byte-buddy.version>1.14.13</byte-buddy.version>
+        <hutool.version>5.8.5</hutool.version>
 
 
         <!-- 替换 ExtentReports 为 Allure（更活跃的社区） -->
@@ -110,6 +111,12 @@
             <artifactId>json-schema-validator</artifactId>
             <version>${rest-assured.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
         </dependency>
 
         <!-- ========== 测试报告 ========== -->
@@ -300,8 +307,8 @@
                         <headless>false</headless>
                     </systemPropertyVariables>
                     <argLine>
-                        -Xmx2g 
-                        -XX:MaxPermSize=512m
+<!--                        -Xmx2g -->
+<!--                        -XX:MaxPermSize=512m-->
                         -Dfile.encoding=UTF-8
                         --add-opens java.base/java.lang=ALL-UNNAMED
                         --add-opens java.base/java.util=ALL-UNNAMED

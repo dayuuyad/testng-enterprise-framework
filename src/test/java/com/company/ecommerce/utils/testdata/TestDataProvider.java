@@ -1,8 +1,13 @@
 // src/test/java/com/company/ecommerce/utils/TestDataProvider.java
-package com.company.ecommerce.utils;
+package com.company.ecommerce.utils.testdata;
 
 import com.company.ecommerce.models.Product;
 import com.company.ecommerce.models.User;
+import com.company.ecommerce.utils.ExcelReader;
+import com.company.ecommerce.utils.JsonReader;
+import com.company.ecommerce.utils.testdata.datacreate.ChineseName;
+import com.company.ecommerce.utils.testdata.datacreate.IdCardNum;
+import com.company.ecommerce.utils.testdata.datacreate.Mobile;
 import org.testng.annotations.DataProvider;
 
 import java.io.IOException;
@@ -32,11 +37,12 @@ public class TestDataProvider {
 
     public static User createTestUser() {
         return User.builder()
-                .username("testuser_" + System.currentTimeMillis())
-                .email("test" + System.currentTimeMillis() + "@example.com")
-                .firstName("Test")
-                .lastName("User")
-                .phone("1234567890")
+                .authentication(true)
+                .displayName(new ChineseName().toString())
+                .idCardType("0")
+                .idCardNum(new IdCardNum().toString())
+                .passwd("Aa123456")
+                .phone(new Mobile().toString())
                 .build();
     }
 }

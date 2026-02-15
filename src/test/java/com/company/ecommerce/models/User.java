@@ -15,31 +15,33 @@ import lombok.NoArgsConstructor;
 public class User {
 
     private Long id;
-    private String username;
+    private String displayName;
+    private String idCardType;
+    private String idCardNum;
     private String email;
-    private String firstName;
-    private String lastName;
     private String phone;
     private Address address;
-    private UserStatus status;
+    private Boolean authentication;
+    private String passwd;
+//    private UserStatus status;
 
-    public enum UserStatus {
-        ACTIVE, INACTIVE, SUSPENDED, PENDING_VERIFICATION
-    }
+//    public enum UserStatus {
+//        ACTIVE, INACTIVE, SUSPENDED, PENDING_VERIFICATION
+//    }
 
     /**
      * 获取用户全名
      */
-    public String getFullName() {
-        return String.format("%s %s", firstName, lastName).trim();
-    }
-
-    /**
-     * 检查用户是否活跃
-     */
-    public boolean isActive() {
-        return UserStatus.ACTIVE.equals(status);
-    }
+//    public String getFullName() {
+//        return String.format("%s %s", firstName, lastName).trim();
+//    }
+//
+//    /**
+//     * 检查用户是否活跃
+//     */
+//    public boolean isActive() {
+//        return UserStatus.ACTIVE.equals(status);
+//    }
 }
 
 /**

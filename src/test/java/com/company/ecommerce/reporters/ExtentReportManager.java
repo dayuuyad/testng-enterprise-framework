@@ -10,7 +10,6 @@ import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.company.ecommerce.config.ConfigManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.ITestContext;
 import org.testng.ITestResult;
 
 import java.io.File;

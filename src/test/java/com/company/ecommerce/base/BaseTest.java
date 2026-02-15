@@ -2,7 +2,6 @@ package com.company.ecommerce.base;
 
 import com.company.ecommerce.config.ConfigManager;
 import com.company.ecommerce.listeners.TestListener;
-import com.company.ecommerce.reporters.ExtentReportManager;
 import com.company.ecommerce.utils.*;
 import io.restassured.response.Response;
 import org.openqa.selenium.WebDriver;
@@ -21,11 +20,19 @@ public abstract class BaseTest {
     protected DatabaseManager dbManager;
     protected APIUtils apiUtils;
     protected TestDataUtils testDataUtils;
+    protected static String hmacSha1Algorithm = "HmacSHA1";
+    protected static String secretKey;
+    protected static String appId;
+    protected static String serviceCode;
 
     @BeforeSuite(alwaysRun = true)
     public void globalSetup() {
         String environment = System.getProperty("environment", "qa");
+//        logger.info(environment);
         ConfigManager.loadConfig(environment);
+        secretKey = ConfigManager.getApiSecretKey();
+        appId = ConfigManager.getApiAppId();
+        serviceCode = ConfigManager.getServiceCode();
 
         logger.info("=========================================");
         logger.info("Starting Test Suite");
@@ -94,12 +101,12 @@ public abstract class BaseTest {
 
         if (result.getStatus() == ITestResult.FAILURE) {
             // 失败时自动截图
-            String screenshotPath = ScreenshotUtils.captureOnFailure(result);
-            if (screenshotPath != null) {
-                logger.info("测试失败截图: {}", screenshotPath);
-                // 可以将路径添加到报告
-                ExtentReportManager.addScreenshot(screenshotPath);
-            }
+//            String screenshotPath = ScreenshotUtils.captureOnFailure(result);
+//            if (screenshotPath != null) {
+//                logger.info("测试失败截图: {}", screenshotPath);
+//                // 可以将路径添加到报告
+//                ExtentReportManager.addScreenshot(screenshotPath);
+//            }
         }
 
         // 处理测试结果

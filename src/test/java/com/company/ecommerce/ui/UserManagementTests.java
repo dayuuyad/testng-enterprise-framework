@@ -5,8 +5,8 @@ import com.company.ecommerce.base.BaseUITest;
 import com.company.ecommerce.ui.pages.LoginPage;
 import com.company.ecommerce.ui.pages.HomePage;
 import com.company.ecommerce.ui.pages.UserProfilePage;
-import com.company.ecommerce.utils.ConfigManagerbak;
-import com.company.ecommerce.utils.TestDataProvider;
+import com.company.ecommerce.config.ConfigManager;
+import com.company.ecommerce.utils.testdata.TestDataProvider;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
@@ -30,8 +30,8 @@ public class UserManagementTests extends BaseUITest {
     )
     public void testValidUserLogin() {
         // Given
-        String username = ConfigManagerbak.getTestUsername();
-        String password = ConfigManagerbak.getTestPassword();
+        String username = ConfigManager.getProperty("test.username");
+        String password = ConfigManager.getProperty("test.password");
 
         // When
         loginPage.navigateTo();

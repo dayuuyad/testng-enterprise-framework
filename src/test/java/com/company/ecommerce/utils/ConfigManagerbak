@@ -32,11 +32,15 @@ public class ConfigManagerbak {
                 if (instance == null) {
                     instance = new ConfigManagerbak();
                     // 自动加载配置
-                    instance.autoLoadConfig();
+//                    instance.autoLoadConfig();
                 }
             }
         }
         return instance;
+    }
+
+    public static String getApiSecretKey() {
+        return null;
     }
 
     /**

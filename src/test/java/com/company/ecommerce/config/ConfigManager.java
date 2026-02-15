@@ -1,5 +1,7 @@
 package com.company.ecommerce.config;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -15,15 +17,19 @@ public class ConfigManager {
 
     /**
      * 加载配置文件
+     *
      * @param environment 环境名称 (dev, qa, staging, production)
      */
     public static void loadConfig(String environment) {
         currentEnvironment = environment;
         String configFile = environment + ".properties";
 
-        try (InputStream input = ConfigManager.class
-                .getClassLoader()
-                .getResourceAsStream("config/" + configFile)) {
+        // 获取当前工作目录（通常是项目根目录）
+        String projectRoot = System.getProperty("user.dir");
+        String configPath = projectRoot + File.separator + "config" + File.separator + configFile;
+
+        try (InputStream input = new FileInputStream(configPath)) {
+//        try (InputStream input = ConfigManager.class.getClassLoader().getResourceAsStream("config/" + configFile)) {
 
             if (input == null) {
                 throw new RuntimeException("Configuration file not found: " + configFile);
@@ -140,4 +146,16 @@ public class ConfigManager {
         properties.setProperty(key, value);
     }
 
+    public static String getApiSecretKey() {
+        return getProperty("app.api.secretKey");
+    }
+
+    public static String getApiAppId() {
+        return getProperty("app.api.appId");
+    }
+
+    public static String getServiceCode() {
+        return getProperty("app.api.serviceCode");
+
+    }
 }

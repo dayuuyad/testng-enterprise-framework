@@ -1,7 +1,7 @@
 // src/test/java/com/company/ecommerce/ui/pages/HomePage.java
 package com.company.ecommerce.ui.pages;
 
-import com.company.ecommerce.utils.ConfigManagerbak;
+import com.company.ecommerce.config.ConfigManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -80,7 +80,7 @@ public class HomePage extends BasePage {
     public boolean isHomePageLoaded() {
         try {
             return isDisplayed(logo) &&
-                    driver.getCurrentUrl().contains(ConfigManagerbak.getAppUrl());
+                    driver.getCurrentUrl().contains(ConfigManager.getAppUrl());
         } catch (Exception e) {
             return false;
         }

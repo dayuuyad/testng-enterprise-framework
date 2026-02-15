@@ -1,7 +1,7 @@
 // src/test/java/com/company/ecommerce/ui/pages/LoginPage.java
 package com.company.ecommerce.ui.pages;
 
-import com.company.ecommerce.utils.ConfigManagerbak;
+import com.company.ecommerce.config.ConfigManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -31,7 +31,7 @@ public class LoginPage extends BasePage {
 
     // 页面操作方法
     public void navigateTo() {
-        driver.get(ConfigManagerbak.getAppUrl() + "/login");
+        driver.get(ConfigManager.getAppUrl() + "/login");
     }
 
     public void login(String username, String password) {

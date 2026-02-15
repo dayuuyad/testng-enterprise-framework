@@ -1,7 +1,7 @@
 // src/test/java/com/company/ecommerce/base/BaseUITest.java
 package com.company.ecommerce.base;
 
-import com.company.ecommerce.utils.ConfigManagerbak;
+import com.company.ecommerce.config.ConfigManager;
 import com.company.ecommerce.utils.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -25,7 +25,7 @@ public class BaseUITest {
     public void setupSuite() {
 //        RestAssured.baseURI = ConfigManager.getApiBaseUrl();
 //        RestAssured.basePath = ConfigManager.getApiBasePath();
-        baseUrl = ConfigManagerbak.getApiBaseUrl();
+        baseUrl = ConfigManager.getApiBaseUrl();
     }
 
     @BeforeMethod
