@@ -3,8 +3,10 @@ package com.company.ecommerce.listeners;
 
 import com.company.ecommerce.reporters.ExtentReportManager;
 import com.company.ecommerce.utils.NotificationService;
-import com.company.ecommerce.utils.ScreenshotUtils;
-import org.testng.*;
+import org.testng.IInvokedMethod;
+import org.testng.IInvokedMethodListener;
+import org.testng.ITestListener;
+import org.testng.ITestResult;
 
 import java.lang.reflect.Method;
 

@@ -1,8 +1,13 @@
 package com.company.ecommerce.base;
 
 import com.company.ecommerce.config.ConfigManager;
-import com.company.ecommerce.listeners.TestListener;
-import com.company.ecommerce.utils.*;
+import com.company.ecommerce.listeners.AllureTestListener;
+import com.company.ecommerce.reporters.AllureManager;
+import com.company.ecommerce.utils.APIUtils;
+import com.company.ecommerce.utils.DatabaseManager;
+import com.company.ecommerce.utils.TestDataUtils;
+import com.company.ecommerce.utils.WebDriverManager;
+import io.qameta.allure.SeverityLevel;
 import io.restassured.response.Response;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
@@ -12,7 +17,7 @@ import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
 
-@Listeners(TestListener.class)
+@Listeners(AllureTestListener.class)
 public abstract class BaseTest {
 
     protected static final Logger logger = LoggerFactory.getLogger(BaseTest.class);
@@ -40,6 +45,12 @@ public abstract class BaseTest {
         logger.info("App URL: {}", ConfigManager.getAppUrl());
         logger.info("API URL: {}", ConfigManager.getApiBaseUrl());
         logger.info("=========================================");
+
+        // 初始化 Allure
+        if (ConfigManager.getBooleanProperty("allure.enabled", true)) {
+            AllureManager.initAllure();
+//            AllureManager.startTestSuite(context.getSuite().getName());
+        }
     }
 
     @BeforeTest(alwaysRun = true)
@@ -52,6 +63,11 @@ public abstract class BaseTest {
     public void classSetup() {
         String className = this.getClass().getSimpleName();
         logger.info("Initializing test class: {}", className);
+
+        // 设置 Allure 分类
+        if (ConfigManager.getBooleanProperty("allure.enabled", true)) {
+            AllureManager.setFeature(className.replace("Tests", ""));
+        }
 
         // 根据测试类需求初始化相应的工具
         initializeRequiredTools();
@@ -86,6 +102,11 @@ public abstract class BaseTest {
         String methodName = method.getName();
         logger.info("Starting test method: {}", methodName);
 
+        // 设置 Allure 信息
+        if (ConfigManager.getBooleanProperty("allure.enabled", true)) {
+            setupAllureForMethod(method);
+        }
+
         // 初始化 WebDriver（如果需要）
         if (requiresBrowser()) {
             driver = WebDriverManager.getDriver();
@@ -93,6 +114,43 @@ public abstract class BaseTest {
                 logger.info("浏览器已初始化: {}", ConfigManager.getBrowserName());
             }
         }
+    }
+
+    /**
+     * 为测试方法设置 Allure 信息
+     */
+    private void setupAllureForMethod(Method method) {
+        // 设置测试名称
+        AllureManager.addStep("开始测试: " + method.getName());
+
+        // 设置严重级别
+        if (method.isAnnotationPresent(org.testng.annotations.Test.class)) {
+            org.testng.annotations.Test testAnnotation = method.getAnnotation(org.testng.annotations.Test.class);
+
+            // 设置描述
+            if (!testAnnotation.description().isEmpty()) {
+                AllureManager.setDescription(testAnnotation.description());
+            }
+
+            // 根据优先级设置严重级别
+            if (testAnnotation.priority() == 1) {
+                AllureManager.setSeverity(SeverityLevel.CRITICAL);
+            } else if (testAnnotation.priority() <= 3) {
+                AllureManager.setSeverity(SeverityLevel.BLOCKER);
+            } else if (testAnnotation.priority() <= 5) {
+                AllureManager.setSeverity(SeverityLevel.NORMAL);
+            } else {
+                AllureManager.setSeverity(SeverityLevel.MINOR);
+            }
+
+            // 设置测试组
+            if (testAnnotation.groups().length > 0) {
+                AllureManager.setStory(String.join(", ", testAnnotation.groups()));
+            }
+        }
+
+        // 设置所有者
+        AllureManager.setOwner("自动化测试团队");
     }
 
     @AfterMethod(alwaysRun = true)
@@ -120,19 +178,41 @@ public abstract class BaseTest {
      * 处理测试结果
      */
     private void processTestResult(ITestResult result) {
+        String testName = result.getName();
+
         switch (result.getStatus()) {
             case ITestResult.SUCCESS:
-                logger.info("✅ Test PASSED: {}", result.getName());
+                logger.info("✅ 测试通过: {}", testName);
+                AllureManager.addStep("测试通过: " + testName);
                 break;
+
             case ITestResult.FAILURE:
-                logger.error("❌ Test FAILED: {}", result.getName(), result.getThrowable());
-                // 失败时截图
+                logger.error("❌ 测试失败: {}", testName, result.getThrowable());
+
+                // 失败时截图并添加到 Allure
                 if (driver != null && ConfigManager.isScreenshotOnFailure()) {
-                    ScreenshotUtils.capture(driver, result.getName());
+                    try {
+                        byte[] screenshot = AllureManager.addScreenshot(driver, "失败截图");
+                        if (screenshot.length > 0) {
+                            logger.info("失败截图已添加到报告");
+                        }
+                    } catch (Exception e) {
+                        logger.warn("截图失败: {}", e.getMessage());
+                    }
+                }
+
+                // 添加错误信息到 Allure
+                if (result.getThrowable() != null) {
+                    AllureManager.addTextAttachment(
+                            result.getThrowable().getMessage(),
+                            "错误信息"
+                    );
                 }
                 break;
+
             case ITestResult.SKIP:
-                logger.warn("⏸️ Test SKIPPED: {}", result.getName());
+                logger.warn("⏸️ 测试跳过: {}", testName);
+                AllureManager.addStep("测试跳过: " + testName);
                 break;
         }
     }
@@ -209,20 +289,6 @@ public abstract class BaseTest {
     // ========== 便捷方法 ==========
 
     /**
-     * 生成唯一邮箱
-     */
-    protected String generateUniqueEmail() {
-        return "test_" + System.currentTimeMillis() + "@example.com";
-    }
-
-    /**
-     * 生成唯一用户名
-     */
-    protected String generateUniqueUsername() {
-        return "user_" + System.currentTimeMillis();
-    }
-
-    /**
      * 执行数据库查询的便捷方法
      */
     protected Object queryDatabase(String sql, Object... params) {
@@ -235,7 +301,7 @@ public abstract class BaseTest {
     /**
      * 执行 API 调用的便捷方法
      */
-    protected Response callApi(String method, String endpoint, Object body) {
+    protected Response callApi2(String method, String endpoint, Object body) {
         if (apiUtils == null) {
             throw new IllegalStateException("APIUtils 未初始化，请先设置 requiresAPI() 返回 true");
         }
@@ -256,5 +322,30 @@ public abstract class BaseTest {
         }
     }
 
+    /**
+     * Allure 步骤：调用 API
+     */
+    protected Response callApi(String method, String endpoint, Object body) {
+        return AllureManager.addManualStep(String.format("调用 %s API: %s", method, endpoint), () -> {
+            if (apiUtils == null) {
+                throw new IllegalStateException("APIUtils 未初始化");
+            }
+
+            switch (method.toUpperCase()) {
+                case "GET":
+                    return apiUtils.get(endpoint);
+                case "POST":
+                    return apiUtils.post(endpoint, body);
+                case "PUT":
+                    return apiUtils.put(endpoint, body);
+                case "DELETE":
+                    return apiUtils.delete(endpoint);
+                case "PATCH":
+                    return apiUtils.patch(endpoint, body);
+                default:
+                    throw new IllegalArgumentException("不支持的 HTTP 方法: " + method);
+            }
+        });
+    }
 
 }

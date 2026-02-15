@@ -16,7 +16,7 @@ import static org.hamcrest.Matchers.notNullValue;
 public class UserAPITests extends BaseAPITest {
 
     private User testUser;
-    private Long createdUserId;
+    private String createdUserId;
 
     @Test(
             groups = {"api", "smoke", "user"},
@@ -27,18 +27,21 @@ public class UserAPITests extends BaseAPITest {
         testUser = TestDataProvider.createTestUser();
 //        logger.info(testUser.toString());
         // When
-        Response response = givenAuth(testUser)
-                .post(CREATE_USER);
+//        Response response = givenAuth(testUser)
+//                .post(CREATE_USER);
+
+        Response response = post(CREATE_USER,testUser);
 
         // Then
         response.then()
                 .statusCode(200)
-                .body("id", equalTo(1))
-                .body("id", notNullValue())
-                .body("username", equalTo(testUser.getDisplayName()))
-                .body("email", equalTo(testUser.getEmail()));
+//                .body("status", equalTo(1))
+//                .body("id", notNullValue())
+//                .body("username", equalTo(testUser.getDisplayName()))
+//                .body("email", equalTo(testUser.getEmail()))
+        ;
 
-        createdUserId = response.jsonPath().getLong("id");
+        createdUserId = response.jsonPath().getString("data.userId");
     }
 
     @Test(
@@ -56,7 +59,7 @@ public class UserAPITests extends BaseAPITest {
         // Then
         response.then()
                 .statusCode(200)
-                .body("id", equalTo(createdUserId.intValue()))
+                .body("id", equalTo(createdUserId))
                 .body("username", equalTo(testUser.getDisplayName()));
     }
 

@@ -1,0 +1,53 @@
+# src/test/resources/allure.yml
+report:
+  language: zh-CN
+  exporter:
+    # 可以导出到不同格式
+    - json
+    - xml
+  logging: true
+  
+# 分类定义
+categories:
+  - name: 产品缺陷
+    messageRegex: .*AssertionError.*
+    matchedStatuses:
+      - failed
+  - name: 测试缺陷
+    messageRegex: .*RuntimeException.*
+    matchedStatuses:
+      - broken
+  - name: 跳过测试
+    matchedStatuses:
+      - skipped
+    messageRegex: .*condition.*
+  - name: 忽略测试
+    matchedStatuses:
+      - skipped
+    messageRegex: .*@Ignore.*
+  
+# 环境配置
+environment:
+  project: Test Automation Framework
+  version: 1.0.0
+  language: Java 21
+  test_framework: TestNG
+  allure_version: 2.24.0
+  selenium_version: 4.19.0
+  
+# 插件配置
+plugins:
+  - behaviors
+  - packages
+  - screen-diff
+  - xctest
+  - xray
+  - custom-logo
+  
+# 自定义 Logo
+customLogo: true
+logoPath: custom/logo.png
+logoHeight: 50
+
+# 语言设置
+language: zh

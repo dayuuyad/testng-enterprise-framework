@@ -30,8 +30,9 @@
 
 
         <!-- 替换 ExtentReports 为 Allure（更活跃的社区） -->
-<!--        <allure-testng.version>2.25.0</allure-testng.version>     &lt;!&ndash; Latest: Feb 2024 &ndash;&gt;-->
-        
+        <allure.version>2.25.0</allure.version>     <!-- Latest: Feb 2024 -->
+        <aspectj.version>1.9.20.1</aspectj.version>
+
         <!-- Logging -->
         <slf4j.version>2.0.17</slf4j.version>                     <!-- Latest: Jan 2024 -->
         <logback.version>1.4.14</logback.version>                 <!-- Latest: Jan 2024 -->
@@ -121,12 +122,36 @@
 
         <!-- ========== 测试报告 ========== -->
         <!-- Allure TestNG 适配器 (替代 ExtentReports) -->
-<!--        <dependency>-->
-<!--            <groupId>io.qameta.allure</groupId>-->
-<!--            <artifactId>allure-testng</artifactId>-->
-<!--            <version>${allure-testng.version}</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>${allure.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Allure Rest Assured 集成 -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-rest-assured</artifactId>
+            <version>${allure.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Allure Java Commons（核心） -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-java-commons</artifactId>
+            <version>${allure.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- AspectJ（用于注解支持） -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>com.aventstack</groupId>
@@ -305,8 +330,10 @@
                         <environment>qa</environment>
                         <browser>chrome</browser>
                         <headless>false</headless>
+                        <allure.results.directory>${project.basedir}/test-results/allure-results</allure.results.directory>
                     </systemPropertyVariables>
                     <argLine>
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
 <!--                        -Xmx2g -->
 <!--                        -XX:MaxPermSize=512m-->
                         -Dfile.encoding=UTF-8
@@ -330,16 +357,16 @@
             </plugin>
 
             <!-- Allure 报告插件 -->
-<!--            <plugin>-->
-<!--                <groupId>io.qameta.allure</groupId>-->
-<!--                <artifactId>allure-maven</artifactId>-->
-<!--                <version>2.12.0</version>-->
-<!--                <configuration>-->
-<!--                    <reportVersion>${allure-testng.version}</reportVersion>-->
-<!--                    <resultsDirectory>${project.basedir}/allure-results</resultsDirectory>-->
-<!--                    <reportDirectory>${project.basedir}/test-results/allure-report</reportDirectory>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>2.12.0</version>
+                <configuration>
+                    <reportVersion>${allure.version}</reportVersion>
+                    <resultsDirectory>${project.basedir}/test-results/allure-results</resultsDirectory>
+                    <reportDirectory>${project.basedir}/test-results/allure-report</reportDirectory>
+                </configuration>
+            </plugin>
 
             <!-- JaCoCo 代码覆盖率 -->
             <plugin>

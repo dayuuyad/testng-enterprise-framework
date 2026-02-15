@@ -2,6 +2,7 @@
 package com.company.ecommerce.base;
 
 import com.company.ecommerce.config.ConfigManager;
+import com.company.ecommerce.reporters.AllureManager;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +11,7 @@ import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
 
@@ -18,9 +20,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.time.Instant;
 import java.util.Base64;
-import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 
@@ -41,6 +41,38 @@ public abstract class BaseAPITest extends BaseTest {
 //            .header("Authorization", "Bearer " + ConfigManager.getApiToken())
 //            .filter(new RequestLoggingFilter())
 //            .filter(new ResponseLoggingFilter());
+    }
+
+    protected Response post(String url,Object requestBody)  {
+        return AllureManager.addManualStepWithLog(String.format("调用 %s API: %s", "post", url), requestBody,() -> {
+
+                ObjectMapper mapper = new ObjectMapper()
+                .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true)
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        String requestBodyToJson;
+        try {
+            requestBodyToJson = mapper.writeValueAsString(requestBody);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to serialize request body", e);
+        }
+        // 将请求体包含在签名中
+//        String requestBodyToJson = requestBody != null ? requestBody.toString() : "";
+//        System.out.println(requestBodyToJson);
+//        requestBodyToJson="{\"displayName\":\"巫超航\",\"idCardType\":\"0\",\"idCardNum\":\"130520198508093243\",\"phone\":\"15006713756\",\"authentication\":true,\"passwd\":\"Aa123456\"}";
+
+        String signature = generateHmacSha1Signature(requestBodyToJson);
+
+        Response response = given()
+                .contentType(ContentType.JSON)  // 等同于 "application/json;charset=UTF-8"
+                .header("appid", appId)
+                .header("servicecode", serviceCode)
+                .header("Content-Signature", "HMAC-SHA1 " + signature)
+                .body(requestBodyToJson)
+                .filter(new RequestLoggingFilter())
+                .filter(new ResponseLoggingFilter())
+                .post(url);
+        return response;
+        });
     }
 
     protected RequestSpecification givenAuth(Object requestBody)  {
@@ -80,15 +112,11 @@ public abstract class BaseAPITest extends BaseTest {
     }
 
     protected RequestSpecification givenAuth() {
-        String timestamp = getCurrentTimestamp();
-        String nonce = generateNonce();
-        String signature = generateSignature(timestamp, nonce);
 
         return given()
                 .contentType(ContentType.JSON)  // 等同于 "application/json;charset=UTF-8"
                 .header("appid", appId)
                 .header("servicecode", serviceCode)
-                .header("Content-Signature", "HMAC-SHA1 " + signature)
                 .filter(new RequestLoggingFilter())
                 .filter(new ResponseLoggingFilter());
     }
@@ -130,36 +158,6 @@ public abstract class BaseAPITest extends BaseTest {
         } catch (Exception e) {
             throw new RuntimeException("HMAC-SHA1签名生成失败", e);
         }
-    }
-
-    private String generateSignature(String timestamp, String nonce) {
-        try {
-            String dataToSign = timestamp + nonce + appId;
-
-            Mac mac = Mac.getInstance(hmacSha1Algorithm);
-            SecretKeySpec secretKey = new SecretKeySpec(
-                    (BaseTest.secretKey + serviceCode).getBytes(StandardCharsets.UTF_8),
-                    hmacSha1Algorithm
-            );
-            mac.init(secretKey);
-
-            byte[] hmacBytes = mac.doFinal(
-                    dataToSign.getBytes(StandardCharsets.UTF_8)
-            );
-
-            return Base64.getEncoder().encodeToString(hmacBytes);
-
-        } catch (Exception e) {
-            throw new RuntimeException("HMAC-SHA1签名生成失败", e);
-        }
-    }
-
-    private String getCurrentTimestamp() {
-        return String.valueOf(Instant.now().toEpochMilli());
-    }
-
-    private String generateNonce() {
-        return UUID.randomUUID().toString().replace("-", "");
     }
 
     protected RequestSpecification givenAuth1() {
