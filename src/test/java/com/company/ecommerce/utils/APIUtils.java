@@ -28,7 +28,7 @@ public class APIUtils {
     }
 
     private void initialize() {
-        this.baseUrl = ConfigManager.getApiBaseUrl();
+        this.baseUrl = ConfigManager.getInstance().getApiBaseUrl();
 
         // 配置 RestAssured
         RestAssured.baseURI = baseUrl;
@@ -43,7 +43,7 @@ public class APIUtils {
                 .log().ifValidationFails();
 
         // 添加认证头
-        String authToken = ConfigManager.getProperty("api.auth.token");
+        String authToken = ConfigManager.getInstance().getProperty("api.auth.token");
         if (authToken != null && !authToken.isEmpty()) {
             requestSpec.header("Authorization", "Bearer " + authToken);
         }

@@ -29,8 +29,8 @@ public class WebDriverManagerUtil {
     }
 
     private static void createDriver() {
-        String browser = ConfigManager.getBrowserName().toLowerCase();
-        boolean headless = ConfigManager.isHeadless();
+        String browser = ConfigManager.getInstance().getBrowserName().toLowerCase();
+        boolean headless = ConfigManager.getInstance().isHeadless();
 
         logger.info("启动浏览器: {}, headless: {}", browser, headless);
 
@@ -67,7 +67,7 @@ public class WebDriverManagerUtil {
 
         // 设置超时
         driver.manage().timeouts().implicitlyWait(
-                Duration.ofSeconds(ConfigManager.getIntProperty("browser.implicit.wait", 10))
+                Duration.ofSeconds(ConfigManager.getInstance().getIntProperty("browser.implicit.wait", 10))
         );
         driver.manage().window().maximize();
 

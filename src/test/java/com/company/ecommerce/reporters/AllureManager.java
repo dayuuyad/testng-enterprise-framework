@@ -162,6 +162,9 @@ public class AllureManager {
         }
     }
 
+
+
+
     /**
      * 添加截图到报告
      */

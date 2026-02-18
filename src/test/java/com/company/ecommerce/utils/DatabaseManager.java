@@ -35,11 +35,11 @@ public class DatabaseManager {
         }
 
         try {
-            String host = ConfigManager.getDbHost();
-            String port = ConfigManager.getProperty("db.port", "3306");
-            String database = ConfigManager.getDbName();
-            String username = ConfigManager.getDbUsername();
-            String password = ConfigManager.getDbPassword();
+            String host = ConfigManager.getInstance().getDbHost();
+            String port = ConfigManager.getInstance().getProperty("db.port", "3306");
+            String database = ConfigManager.getInstance().getDbName();
+            String username = ConfigManager.getInstance().getDbUsername();
+            String password = ConfigManager.getInstance().getDbPassword();
 
             String jdbcUrl = String.format(JDBC_URL_TEMPLATE, host, port, database);
 
@@ -267,7 +267,7 @@ public class DatabaseManager {
         String sql = "SELECT COUNT(*) FROM information_schema.tables " +
                 "WHERE table_schema = ? AND table_name = ?";
 
-        String dbName = ConfigManager.getDbName();
+        String dbName = ConfigManager.getInstance().getDbName();
         Long count = queryForObject(sql, Long.class, dbName, tableName);
         return count != null && count > 0;
     }

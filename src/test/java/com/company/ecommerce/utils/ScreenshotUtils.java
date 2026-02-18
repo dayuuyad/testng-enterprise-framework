@@ -49,7 +49,7 @@ public class ScreenshotUtils {
 
         try {
             // 检查截图功能是否启用
-            if (!ConfigManager.isScreenshotOnFailure()) {
+            if (!ConfigManager.getInstance().isScreenshotOnFailure()) {
                 logger.debug("截图功能已禁用");
                 return null;
             }
@@ -294,7 +294,7 @@ public class ScreenshotUtils {
      * 创建缩略图
      */
     private static void createThumbnail(byte[] screenshotBytes, String originalPath) {
-        if (!ConfigManager.getBooleanProperty("screenshot.thumbnail.enabled", true)) {
+        if (!ConfigManager.getInstance().getBooleanProperty("screenshot.thumbnail.enabled", true)) {
             return;
         }
 
@@ -349,7 +349,7 @@ public class ScreenshotUtils {
      * 创建截图目录
      */
     private static String createScreenshotDirectory() {
-        String baseDir = ConfigManager.getProperty("screenshot.base.dir", "test-results/screenshots");
+        String baseDir = ConfigManager.getInstance().getProperty("screenshot.base.dir", "test-results/screenshots");
         String dateFolder = FOLDER_DATE_FORMAT.format(new Date());
 
         Path screenshotDir = Paths.get(baseDir, dateFolder);
@@ -376,7 +376,7 @@ public class ScreenshotUtils {
      */
     public static void cleanupOldScreenshots(int daysToKeep) {
         try {
-            String baseDir = ConfigManager.getProperty("screenshot.base.dir", "test-results/screenshots");
+            String baseDir = ConfigManager.getInstance().getProperty("screenshot.base.dir", "test-results/screenshots");
             File screenshotsDir = new File(baseDir);
 
             if (!screenshotsDir.exists() || !screenshotsDir.isDirectory()) {
@@ -465,7 +465,7 @@ public class ScreenshotUtils {
     public static Map<String, Object> getScreenshotStats() {
         Map<String, Object> stats = new HashMap<>();
         try {
-            String baseDir = ConfigManager.getProperty("screenshot.base.dir", "test-results/screenshots");
+            String baseDir = ConfigManager.getInstance().getProperty("screenshot.base.dir", "test-results/screenshots");
             File dir = new File(baseDir);
 
             if (dir.exists() && dir.isDirectory()) {

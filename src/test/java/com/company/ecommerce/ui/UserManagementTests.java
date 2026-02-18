@@ -30,8 +30,8 @@ public class UserManagementTests extends BaseUITest {
     )
     public void testValidUserLogin() {
         // Given
-        String username = ConfigManager.getProperty("test.username");
-        String password = ConfigManager.getProperty("test.password");
+        String username = ConfigManager.getInstance().getProperty("test.username");
+        String password = ConfigManager.getInstance().getProperty("test.password");
 
         // When
         loginPage.navigateTo();

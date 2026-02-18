@@ -38,14 +38,14 @@ public class WebDriverManager {
     public static WebDriverWait getWait() {
         if (wait.get() == null) {
             wait.set(new WebDriverWait(getDriver(),
-                    Duration.ofSeconds(ConfigManager.getIntProperty("browser.implicit.wait", 10))));
+                    Duration.ofSeconds(ConfigManager.getInstance().getIntProperty("browser.implicit.wait", 10))));
         }
         return wait.get();
     }
 
     private static void initializeDriver() {
-        String browserName = ConfigManager.getBrowserName().toLowerCase();
-        boolean headless = ConfigManager.isHeadless();
+        String browserName = ConfigManager.getInstance().getBrowserName().toLowerCase();
+        boolean headless = ConfigManager.getInstance().isHeadless();
 
         logger.info("Initializing {} browser (headless: {})", browserName, headless);
 
@@ -103,7 +103,7 @@ public class WebDriverManager {
         options.setExperimentalOption("useAutomationExtension", false);
 
         // Mobile emulation (optional)
-        if (ConfigManager.getBooleanProperty("mobile.emulation", false)) {
+        if (ConfigManager.getInstance().getBooleanProperty("mobile.emulation", false)) {
             Map<String, Object> mobileEmulation = new HashMap<>();
             mobileEmulation.put("deviceName", "iPhone 12");
             options.setExperimentalOption("mobileEmulation", mobileEmulation);
@@ -175,16 +175,16 @@ public class WebDriverManager {
 
         // Set timeouts
         webDriver.manage().timeouts().implicitlyWait(
-                Duration.ofSeconds(ConfigManager.getIntProperty("browser.implicit.wait", 10)));
+                Duration.ofSeconds(ConfigManager.getInstance().getIntProperty("browser.implicit.wait", 10)));
 
         webDriver.manage().timeouts().pageLoadTimeout(
-                Duration.ofSeconds(ConfigManager.getIntProperty("browser.page.load.timeout", 30)));
+                Duration.ofSeconds(ConfigManager.getInstance().getIntProperty("browser.page.load.timeout", 30)));
 
         webDriver.manage().timeouts().scriptTimeout(
-                Duration.ofSeconds(ConfigManager.getIntProperty("browser.script.timeout", 30)));
+                Duration.ofSeconds(ConfigManager.getInstance().getIntProperty("browser.script.timeout", 30)));
 
         // Maximize window if not headless
-        if (!ConfigManager.isHeadless()) {
+        if (!ConfigManager.getInstance().isHeadless()) {
             maximizeWindow();
         }
 

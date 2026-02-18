@@ -5,7 +5,7 @@ import com.company.ecommerce.listeners.AllureTestListener;
 import com.company.ecommerce.reporters.AllureManager;
 import com.company.ecommerce.utils.APIUtils;
 import com.company.ecommerce.utils.DatabaseManager;
-import com.company.ecommerce.utils.TestDataUtils;
+import com.company.ecommerce.utils.testdata.TestDataUtils;
 import com.company.ecommerce.utils.WebDriverManager;
 import io.qameta.allure.SeverityLevel;
 import io.restassured.response.Response;
@@ -34,20 +34,19 @@ public abstract class BaseTest {
     public void globalSetup() {
         String environment = System.getProperty("environment", "qa");
 //        logger.info(environment);
-        ConfigManager.loadConfig(environment);
-        secretKey = ConfigManager.getApiSecretKey();
-        appId = ConfigManager.getApiAppId();
-        serviceCode = ConfigManager.getServiceCode();
+        secretKey = ConfigManager.getInstance().getApiSecretKey();
+        appId = ConfigManager.getInstance().getApiAppId();
+        serviceCode = ConfigManager.getInstance().getServiceCode();
 
         logger.info("=========================================");
         logger.info("Starting Test Suite");
-        logger.info("Environment: {}", ConfigManager.getEnvironmentName());
-        logger.info("App URL: {}", ConfigManager.getAppUrl());
-        logger.info("API URL: {}", ConfigManager.getApiBaseUrl());
+        logger.info("Environment: {}", ConfigManager.getInstance().getEnvironmentName());
+        logger.info("App URL: {}", ConfigManager.getInstance().getAppUrl());
+        logger.info("API URL: {}", ConfigManager.getInstance().getApiBaseUrl());
         logger.info("=========================================");
 
         // 初始化 Allure
-        if (ConfigManager.getBooleanProperty("allure.enabled", true)) {
+        if (ConfigManager.getInstance().getBooleanProperty("allure.enabled", true)) {
             AllureManager.initAllure();
 //            AllureManager.startTestSuite(context.getSuite().getName());
         }
@@ -65,7 +64,7 @@ public abstract class BaseTest {
         logger.info("Initializing test class: {}", className);
 
         // 设置 Allure 分类
-        if (ConfigManager.getBooleanProperty("allure.enabled", true)) {
+        if (ConfigManager.getInstance().getBooleanProperty("allure.enabled", true)) {
             AllureManager.setFeature(className.replace("Tests", ""));
         }
 
@@ -103,7 +102,7 @@ public abstract class BaseTest {
         logger.info("Starting test method: {}", methodName);
 
         // 设置 Allure 信息
-        if (ConfigManager.getBooleanProperty("allure.enabled", true)) {
+        if (ConfigManager.getInstance().getBooleanProperty("allure.enabled", true)) {
             setupAllureForMethod(method);
         }
 
@@ -111,7 +110,7 @@ public abstract class BaseTest {
         if (requiresBrowser()) {
             driver = WebDriverManager.getDriver();
             if (driver != null) {
-                logger.info("浏览器已初始化: {}", ConfigManager.getBrowserName());
+                logger.info("浏览器已初始化: {}", ConfigManager.getInstance().getBrowserName());
             }
         }
     }
@@ -190,7 +189,7 @@ public abstract class BaseTest {
                 logger.error("❌ 测试失败: {}", testName, result.getThrowable());
 
                 // 失败时截图并添加到 Allure
-                if (driver != null && ConfigManager.isScreenshotOnFailure()) {
+                if (driver != null && ConfigManager.getInstance().isScreenshotOnFailure()) {
                     try {
                         byte[] screenshot = AllureManager.addScreenshot(driver, "失败截图");
                         if (screenshot.length > 0) {

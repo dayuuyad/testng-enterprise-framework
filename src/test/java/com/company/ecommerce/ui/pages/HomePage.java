@@ -80,7 +80,7 @@ public class HomePage extends BasePage {
     public boolean isHomePageLoaded() {
         try {
             return isDisplayed(logo) &&
-                    driver.getCurrentUrl().contains(ConfigManager.getAppUrl());
+                    driver.getCurrentUrl().contains(ConfigManager.getInstance().getAppUrl());
         } catch (Exception e) {
             return false;
         }

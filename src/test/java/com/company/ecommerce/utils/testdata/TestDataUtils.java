@@ -1,5 +1,8 @@
-package com.company.ecommerce.utils;
+package com.company.ecommerce.utils.testdata;
 
+import com.company.ecommerce.utils.testdata.datacreate.ChineseName;
+import com.company.ecommerce.utils.testdata.datacreate.IdCardNum;
+import com.company.ecommerce.utils.testdata.datacreate.Mobile;
 import com.github.javafaker.Faker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +17,41 @@ public class TestDataUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(TestDataUtils.class);
     private static final Faker faker = new Faker();
+    private static Map<String, ValueGenerator> generators = new HashMap<>();
+
+//    public TestDataUtils() {
+//        this.generators = new HashMap<>();
+//        registerDefaultGenerators();
+//    }
+
+    /**
+     * 生成值
+     */
+    public static String generateValue(String methodName) {
+        if (generators.isEmpty()){
+            registerDefaultGenerators();
+        }
+        ValueGenerator generator = generators.get(methodName);
+        return generator.generate();
+//        if (generator != null) {
+//            return generator.generate();
+//        }
+//        return "【未知生成器:" + methodName + "】";
+    }
+
+    @FunctionalInterface
+    public interface ValueGenerator {
+        String generate();
+    }
+
+    /**
+     * 注册默认生成器
+     */
+    private static void registerDefaultGenerators() {
+        generators.put("displayName", () -> new ChineseName().toString());
+        generators.put("idCardNum", () -> new IdCardNum().toString());
+        generators.put("phone", () -> new Mobile().toString());
+    }
 
     /**
      * 生成用户测试数据

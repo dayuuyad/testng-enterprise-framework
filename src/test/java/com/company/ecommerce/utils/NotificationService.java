@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class NotificationService {
 
-    private static final ConfigManager config = new ConfigManager();
+    private static final ConfigManager config = ConfigManager.getInstance();
     private static final boolean ENABLED = config.getBooleanProperty("notifications.enabled", false);
     private static final String NOTIFICATION_TYPE = config.getProperty("notifications.type", "email");
 

@@ -3,6 +3,7 @@ package com.company.ecommerce.base;
 
 import com.company.ecommerce.config.ConfigManager;
 import com.company.ecommerce.reporters.AllureManager;
+import com.company.ecommerce.utils.ExcelReader;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,10 +18,13 @@ import org.testng.annotations.BeforeClass;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.Iterator;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
@@ -28,17 +32,16 @@ public abstract class BaseAPITest extends BaseTest {
 
     protected RequestSpecification requestSpec;
 
-
     @BeforeClass(alwaysRun = true)
     public void apiSetup() {
 
-        RestAssured.baseURI = ConfigManager.getApiBaseUrl();
+        RestAssured.baseURI = ConfigManager.getInstance().getApiBaseUrl();
         logger.info("-------------------RestAssured.baseURI: {}",RestAssured.baseURI);
-//        RestAssured.basePath = ConfigManager.getApiBasePath();
+//        RestAssured.basePath = ConfigManager.getInstance().getApiBasePath();
 
 //        requestSpec = given()
 //            .header("Content-Type", "application/json")
-//            .header("Authorization", "Bearer " + ConfigManager.getApiToken())
+//            .header("Authorization", "Bearer " + ConfigManager.getInstance().getApiToken())
 //            .filter(new RequestLoggingFilter())
 //            .filter(new ResponseLoggingFilter());
     }
@@ -73,6 +76,14 @@ public abstract class BaseAPITest extends BaseTest {
                 .post(url);
         return response;
         });
+    }
+
+    protected void flow(String sheetname)  {
+        Iterator<Map<String, String>> mapIterator = ExcelReader.getUserDataAsMap("flow.xlsx", sheetname);
+        while (mapIterator.hasNext()) {
+            Map<String, String> map = mapIterator.next();
+            post(map.get("url"), map.get("requestBody"));
+        }
     }
 
     protected RequestSpecification givenAuth(Object requestBody)  {
@@ -170,8 +181,8 @@ public abstract class BaseAPITest extends BaseTest {
 //abstract class BaseAPITest2  {
 //
 //    private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
-//    private static final String SECRET_KEY = ConfigManager.getApiSecretKey();
-//    private static final String API_KEY = ConfigManager.getApiAppId();
+//    private static final String SECRET_KEY = ConfigManager.getInstance().getApiSecretKey();
+//    private static final String API_KEY = ConfigManager.getInstance().getApiAppId();
 //
 //    protected RequestSpecification givenAuth() {
 //        String timestamp = getCurrentTimestamp();

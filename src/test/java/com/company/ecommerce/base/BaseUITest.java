@@ -25,7 +25,7 @@ public class BaseUITest {
     public void setupSuite() {
 //        RestAssured.baseURI = ConfigManager.getApiBaseUrl();
 //        RestAssured.basePath = ConfigManager.getApiBasePath();
-        baseUrl = ConfigManager.getApiBaseUrl();
+        baseUrl = ConfigManager.getInstance().getApiBaseUrl();
     }
 
     @BeforeMethod

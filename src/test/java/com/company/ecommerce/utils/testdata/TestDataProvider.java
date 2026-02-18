@@ -25,6 +25,11 @@ public class TestDataProvider {
         };
     }
 
+    @DataProvider(name = "flowName")
+    public Iterator<String> getExcelSheetname() {
+        return ExcelReader.getSheetNames("flow.xlsx");
+    }
+
     @DataProvider(name = "userData")
     public Iterator<Object[]> getUserData() throws IOException {
         return ExcelReader.readTestData("users.xlsx", "UserData");

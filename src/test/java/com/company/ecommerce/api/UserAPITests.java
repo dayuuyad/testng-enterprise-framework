@@ -5,13 +5,11 @@ import com.company.ecommerce.base.BaseAPITest;
 import com.company.ecommerce.models.User;
 import com.company.ecommerce.utils.testdata.TestDataProvider;
 import io.restassured.response.Response;
-import org.testng.annotations.*;
+import org.testng.annotations.Test;
 
-import static com.company.ecommerce.constants.ContractEndpoint.*;
+import static com.company.ecommerce.constants.ContractEndpoint.CREATE_USER;
 import static io.restassured.RestAssured.given;
-
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.notNullValue;
 
 public class UserAPITests extends BaseAPITest {
 
@@ -35,7 +33,7 @@ public class UserAPITests extends BaseAPITest {
         // Then
         response.then()
                 .statusCode(200)
-//                .body("status", equalTo(1))
+                .body("status", equalTo(1))
 //                .body("id", notNullValue())
 //                .body("username", equalTo(testUser.getDisplayName()))
 //                .body("email", equalTo(testUser.getEmail()))

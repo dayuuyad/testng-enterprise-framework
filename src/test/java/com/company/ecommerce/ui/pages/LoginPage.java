@@ -31,7 +31,7 @@ public class LoginPage extends BasePage {
 
     // 页面操作方法
     public void navigateTo() {
-        driver.get(ConfigManager.getAppUrl() + "/login");
+        driver.get(ConfigManager.getInstance().getAppUrl() + "/login");
     }
 
     public void login(String username, String password) {

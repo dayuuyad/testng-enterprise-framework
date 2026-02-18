@@ -50,9 +50,9 @@ public class ExtentReportManager {
 
         try {
             // 创建报告目录
-            String reportDir = ConfigManager.getProperty("report.base.dir", "test-results/html-reports");
+            String reportDir = ConfigManager.getInstance().getProperty("report.base.dir", "test-results/html-reports");
             String timestamp = DATE_FORMAT.format(new Date());
-            String reportName = ConfigManager.getProperty("report.name", "TestReport") + "_" + timestamp;
+            String reportName = ConfigManager.getInstance().getProperty("report.name", "TestReport") + "_" + timestamp;
 
             reportPath = reportDir + File.separator + reportName + File.separator + "index.html";
             File reportFile = new File(reportPath);
@@ -86,9 +86,9 @@ public class ExtentReportManager {
      * 配置报告格式
      */
     private static void configureReporter(ExtentSparkReporter sparkReporter) {
-        String theme = ConfigManager.getProperty("report.theme", "DARK").toUpperCase();
-        String documentTitle = ConfigManager.getProperty("report.document.title", "Test Automation Report");
-        String reportName = ConfigManager.getProperty("report.name", "Test Execution Report");
+        String theme = ConfigManager.getInstance().getProperty("report.theme", "DARK").toUpperCase();
+        String documentTitle = ConfigManager.getInstance().getProperty("report.document.title", "Test Automation Report");
+        String reportName = ConfigManager.getInstance().getProperty("report.name", "Test Execution Report");
 
         // 设置主题
         if ("STANDARD".equals(theme)) {
@@ -139,12 +139,12 @@ public class ExtentReportManager {
         extent.setSystemInfo("时区", System.getProperty("user.timezone"));
 
         // 项目信息
-        extent.setSystemInfo("项目名称", ConfigManager.getProperty("report.project.name", "Test Automation Framework"));
-        extent.setSystemInfo("项目版本", ConfigManager.getProperty("report.project.version", "1.0.0"));
-        extent.setSystemInfo("环境", ConfigManager.getEnvironmentName());
-        extent.setSystemInfo("应用URL", ConfigManager.getAppUrl());
-        extent.setSystemInfo("API URL", ConfigManager.getApiBaseUrl());
-        extent.setSystemInfo("浏览器", ConfigManager.getBrowserName());
+        extent.setSystemInfo("项目名称", ConfigManager.getInstance().getProperty("report.project.name", "Test Automation Framework"));
+        extent.setSystemInfo("项目版本", ConfigManager.getInstance().getProperty("report.project.version", "1.0.0"));
+        extent.setSystemInfo("环境", ConfigManager.getInstance().getEnvironmentName());
+        extent.setSystemInfo("应用URL", ConfigManager.getInstance().getAppUrl());
+        extent.setSystemInfo("API URL", ConfigManager.getInstance().getApiBaseUrl());
+        extent.setSystemInfo("浏览器", ConfigManager.getInstance().getBrowserName());
         extent.setSystemInfo("执行时间", DISPLAY_DATE_FORMAT.format(new Date()));
 
         // Maven 信息
