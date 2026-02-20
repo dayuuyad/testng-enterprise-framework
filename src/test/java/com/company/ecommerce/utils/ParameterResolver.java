@@ -1,6 +1,5 @@
 package com.company.ecommerce.utils;
 
-import com.company.ecommerce.test.simple.SimpleApiStep;
 import com.company.ecommerce.utils.testdata.TestDataUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -52,6 +51,22 @@ public class ParameterResolver {
             throw new RuntimeException(e);
         }
     }
+
+
+    /**
+     * 解析字符串中的所有占位符
+     * 支持：${userId} 从上下文获取
+     * 支持：#{uuid} 调用方法生成
+     */
+    public String sqlResolve(String parameter) {
+        if (parameter == null || parameter.isEmpty()) {
+//            return parameter;
+            return null;
+        }
+        return  resolveContextVariables(parameter);
+    }
+
+
 
     /**
      * 从响应中提取值并存入上下文

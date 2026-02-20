@@ -211,6 +211,10 @@ public class ConfigManager {
         return getProperty("db.name");
     }
 
+    public String getDbURL() {
+        return getProperty("db.url");
+    }
+
     public String getDbUsername() {
         return getProperty("db.username");
     }

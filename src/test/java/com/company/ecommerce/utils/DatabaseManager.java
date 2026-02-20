@@ -1,6 +1,8 @@
 package com.company.ecommerce.utils;
 
 import com.company.ecommerce.config.ConfigManager;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +23,41 @@ public class DatabaseManager {
     private boolean isConnected = false;
 
     // 连接池配置
-    private static final int MAX_POOL_SIZE = 10;
+    private static final int MAX_POOL_SIZE = 5;
     private static final int CONNECTION_TIMEOUT = 30;
     private static final String JDBC_URL_TEMPLATE = "jdbc:mysql://%s:%s/%s?useSSL=false&serverTimezone=UTC";
+
+    private static HikariDataSource dataSource;
+    private static final ThreadLocal<Connection> connectionHolder = new ThreadLocal<>();
+
+//    static {
+//        // 初始化连接池
+//        HikariConfig config = new HikariConfig();
+//        config.setJdbcUrl(ConfigManager.getInstance().getDbURL());
+//        config.setUsername(ConfigManager.getInstance().getDbUsername());
+//        config.setPassword(ConfigManager.getInstance().getDbPassword());
+//        config.setMaximumPoolSize(MAX_POOL_SIZE);
+//        config.setConnectionTimeout(CONNECTION_TIMEOUT * 1000);
+//        config.setConnectionTestQuery("SELECT 1");
+//        config.setPoolName("EcommerceDBPool");
+//
+//        // 添加性能监控
+////        config.setMetricRegistry(...);
+//
+//        dataSource = new HikariDataSource(config);
+//    }
+//
+//    public Connection getConnection() throws SQLException {
+//        Connection conn = connectionHolder.get();
+//        if (conn == null || conn.isClosed()) {
+//            conn = dataSource.getConnection();
+//            connectionHolder.set(conn);
+//        }
+//        return conn;
+//    }
+
+
+
 
     /**
      * 获取数据库连接
@@ -41,7 +75,8 @@ public class DatabaseManager {
             String username = ConfigManager.getInstance().getDbUsername();
             String password = ConfigManager.getInstance().getDbPassword();
 
-            String jdbcUrl = String.format(JDBC_URL_TEMPLATE, host, port, database);
+//            String jdbcUrl = String.format(JDBC_URL_TEMPLATE, host, port, database);
+            String jdbcUrl = ConfigManager.getInstance().getDbURL();
 
             logger.info("连接数据库: {}", database);
             logger.debug("JDBC URL: {}", jdbcUrl);

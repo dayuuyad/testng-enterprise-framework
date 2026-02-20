@@ -148,7 +148,8 @@ public class AllureManager {
             Response result = action.get();
             // 记录返回值
             Allure.addAttachment("返回结果", "application/json",
-                    JsonUtils.responseToPrettyJson(result), ".json");
+                    JsonUtils.toPrettyJson(result.asString()), ".json");
+//                    JsonUtils.responseToPrettyJson(result.asString()), ".json");
 
             Allure.getLifecycle().updateStep(uuid, s -> s.setStatus(Status.PASSED));
             return result;

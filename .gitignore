@@ -22,12 +22,17 @@ bin/
 *.swp
 *.swo
 
+# allure
+.allure/
+
 # Test results
-test-results/screenshots/*.png
-test-results/html-reports/*
-!test-results/html-reports/.gitkeep
-test-results/xml-reports/*
-!test-results/xml-reports/.gitkeep
+test-results/
+#test-results/screenshots/*.png
+#test-results/html-reports/*
+#!test-results/html-reports/.gitkeep
+#test-results/xml-reports/*
+#!test-results/xml-reports/.gitkeep
+src/test/java/com/company/ecommerce/test/
 
 # Logs
 logs/

@@ -11,7 +11,9 @@ import com.company.ecommerce.utils.testdata.datacreate.Mobile;
 import org.testng.annotations.DataProvider;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.Map;
 
 public class TestDataProvider {
 
@@ -35,6 +37,10 @@ public class TestDataProvider {
         return ExcelReader.readTestData("users.xlsx", "UserData");
     }
 
+    @DataProvider(name = "caseDataMap")
+    public Iterator<Map<String, String>> gecaseDataMap(Method method) throws IOException {
+        return ExcelReader.getUserDataAsMap("single.xlsx", method.getName());
+    }
     @DataProvider(name = "productData")
     public Object[][] getProductData() {
         return JsonReader.readTestData("products.json", Product[].class);

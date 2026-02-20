@@ -1,11 +1,19 @@
 // src/test/java/com/company/ecommerce/api/UserAPITests.java
 package com.company.ecommerce.api;
 
+import com.company.ecommerce.assertion.EnhancedSmartJsonAssert;
 import com.company.ecommerce.base.BaseAPITest;
 import com.company.ecommerce.models.User;
+import com.company.ecommerce.utils.ParameterResolver;
 import com.company.ecommerce.utils.testdata.TestDataProvider;
+import com.fasterxml.jackson.databind.JsonNode;
 import io.restassured.response.Response;
+import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.company.ecommerce.constants.ContractEndpoint.CREATE_USER;
 import static io.restassured.RestAssured.given;
@@ -15,12 +23,52 @@ public class UserAPITests extends BaseAPITest {
 
     private User testUser;
     private String createdUserId;
+    private Map<String, Object> context;
+    private ParameterResolver parameterResolver;
+
+    @BeforeClass
+    public void setUp() {
+        context = new HashMap<>();
+        parameterResolver =new ParameterResolver(context);
+    }
+
+    @Override
+    protected boolean requiresDatabase() {
+        return true;
+    }
+
+    @Test(dataProvider = "caseDataMap", dataProviderClass = TestDataProvider.class)
+    public void testCreateUser (Map<String, String> dataMap) throws Exception {
+
+        // When
+//        Response response = givenAuth(testUser)
+//                .post(CREATE_USER);
+        JsonNode requestBody=parameterResolver.requestResolve(dataMap.get("requestBody"));
+
+        Response response = post(CREATE_USER,requestBody);
+        if (dataMap.get("expecteResponse")!=null&&!dataMap.get("expecteResponse").isEmpty()){
+            EnhancedSmartJsonAssert.smartAssert(response.asString(),dataMap.get("expecteResponse"));
+        }
+
+        //获取ID放入上下文
+        parameterResolver.responseSave(dataMap.get("responseExtracts"),response);
+
+        if (dataMap.get("queryDatabase")!=null&&!dataMap.get("queryDatabase").isEmpty()){
+            String sql = parameterResolver.sqlResolve(dataMap.get("queryDatabase"));
+            Object resultObject =queryDatabase(sql);
+//            System.out.println(resultObject);
+            Assert.assertNotNull(resultObject, "对象不应该为null");
+        }
+
+
+    }
+
 
     @Test(
             groups = {"api", "smoke", "user"},
             description = "创建新用户API测试"
     )
-    public void testCreateUser() {
+    public void testCreateUser02 () {
         // Given
         testUser = TestDataProvider.createTestUser();
 //        logger.info(testUser.toString());

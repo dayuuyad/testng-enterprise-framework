@@ -24,7 +24,6 @@ public class ApiFlowTests  extends BaseAPITest {
     public void setUp() {
         context = new HashMap<>();
         parameterResolver =new ParameterResolver(context);
-
     }
 
     @Test(dataProvider = "flowName", dataProviderClass = TestDataProvider.class)
