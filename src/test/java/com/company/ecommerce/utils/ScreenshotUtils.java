@@ -423,7 +423,7 @@ public class ScreenshotUtils {
     private static WebDriver getCurrentDriver() {
         try {
             // 尝试从 WebDriverManager 获取
-            return WebDriverManager.getDriver();
+            return WebDriverManagerUtil.getDriver();
         } catch (Exception e) {
             logger.debug("无法从 WebDriverManager 获取 driver: {}", e.getMessage());
             return null;

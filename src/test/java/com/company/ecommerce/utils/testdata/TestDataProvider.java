@@ -38,9 +38,15 @@ public class TestDataProvider {
     }
 
     @DataProvider(name = "caseDataMap")
-    public Iterator<Map<String, String>> gecaseDataMap(Method method) throws IOException {
+    public Iterator<Map<String, String>> getCaseDataMap(Method method) throws IOException {
         return ExcelReader.getUserDataAsMap("single.xlsx", method.getName());
     }
+
+    @DataProvider(name = "uicaseData")
+    public  Iterator<Object[]> getUICaseDataMap(Method method) throws IOException {
+        return ExcelReader.readTestData("ui/pagecases.xlsx", method.getName());
+    }
+
     @DataProvider(name = "productData")
     public Object[][] getProductData() {
         return JsonReader.readTestData("products.json", Product[].class);

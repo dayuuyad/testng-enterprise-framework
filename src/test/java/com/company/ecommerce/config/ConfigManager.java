@@ -175,8 +175,8 @@ public class ConfigManager {
     }
 
     // 常用属性便捷方法
-    public String getAppUrl() {
-        return getProperty("app.url");
+    public String getWebBaseUrl() {
+        return getProperty("app.web.url");
     }
 
     public String getApiBaseUrl() {
@@ -261,5 +261,9 @@ public class ConfigManager {
     public String getServiceCode() {
         return getProperty("app.api.serviceCode");
 
+    }
+
+    public String getCookieStr() {
+        return getProperty("cookieStr");
     }
 }

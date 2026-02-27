@@ -9,14 +9,27 @@ import org.openqa.selenium.support.FindBy;
 public class LoginPage extends BasePage {
 
     // 页面元素
-    @FindBy(id = "username")
+    @FindBy(css = "input[placeholder='请输入您的手机号/邮箱/账号名']")
     private WebElement usernameField;
 
-    @FindBy(id = "password")
+    @FindBy(css = "input[placeholder='请输入密码']")
     private WebElement passwordField;
 
-    @FindBy(id = "login-button")
+    @FindBy(css = "input[placeholder='请输入验证码']")
+    private WebElement verificationCodeField;
+
+    @FindBy(css = "button[type='button']")
     private WebElement loginButton;
+
+
+    @FindBy(id = "username")
+    private WebElement usernameField1;
+
+    @FindBy(id = "password")
+    private WebElement passwordField1;
+
+    @FindBy(id = "login-button")
+    private WebElement loginButton1;
 
     @FindBy(className = "error-message")
     private WebElement errorMessage;
@@ -31,13 +44,17 @@ public class LoginPage extends BasePage {
 
     // 页面操作方法
     public void navigateTo() {
-        driver.get(ConfigManager.getInstance().getAppUrl() + "/login");
+        driver.get(ConfigManager.getInstance().getWebBaseUrl() );
+        waitForPageLoad();
     }
 
     public void login(String username, String password) {
         type(usernameField, username, "用户名输入框");
         type(passwordField, password, "密码输入框");
+        type(verificationCodeField, "000000", "验证码");
+
         click(loginButton, "登录按钮");
+        System.out.println(getAlertText());
     }
 
     public boolean isErrorMessageDisplayed() {

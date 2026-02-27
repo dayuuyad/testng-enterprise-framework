@@ -142,7 +142,7 @@ public class ExtentReportManager {
         extent.setSystemInfo("项目名称", ConfigManager.getInstance().getProperty("report.project.name", "Test Automation Framework"));
         extent.setSystemInfo("项目版本", ConfigManager.getInstance().getProperty("report.project.version", "1.0.0"));
         extent.setSystemInfo("环境", ConfigManager.getInstance().getEnvironmentName());
-        extent.setSystemInfo("应用URL", ConfigManager.getInstance().getAppUrl());
+        extent.setSystemInfo("应用URL", ConfigManager.getInstance().getWebBaseUrl());
         extent.setSystemInfo("API URL", ConfigManager.getInstance().getApiBaseUrl());
         extent.setSystemInfo("浏览器", ConfigManager.getInstance().getBrowserName());
         extent.setSystemInfo("执行时间", DISPLAY_DATE_FORMAT.format(new Date()));

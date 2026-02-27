@@ -10,6 +10,8 @@ import com.company.ecommerce.utils.testdata.TestDataProvider;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
+import static java.lang.Thread.sleep;
+
 public class UserManagementTests extends BaseUITest {
 
     private LoginPage loginPage;
@@ -19,8 +21,34 @@ public class UserManagementTests extends BaseUITest {
     @BeforeClass
     public void initPages() {
         loginPage = new LoginPage(driver);
-        homePage = new HomePage(driver);
-        profilePage = new UserProfilePage(driver);
+//        homePage = new HomePage(driver);
+//        profilePage = new UserProfilePage(driver);
+    }
+
+    @Test
+    public void testLogin() throws InterruptedException {
+        String username="13111110000";
+        String password="Aa123456";
+        loginPage.navigateTo();
+//        sleep(10000);
+
+        loginPage.login(username, password);
+//        sleep(10000);
+//        System.out.println("111111111111111111");
+
+    }
+
+
+    @Test
+    public void test() {
+        // 打开网页
+        driver.get("https://www.baidu.com/");
+
+        // 获取页面标题
+        System.out.println("页面标题: " + driver.getTitle());
+
+        // 关闭浏览器
+        driver.quit();
     }
 
     @Test(
@@ -42,6 +70,7 @@ public class UserManagementTests extends BaseUITest {
         Assert.assertEquals(homePage.getWelcomeMessage(),
                 "Welcome, " + username, "欢迎消息应该正确显示");
     }
+
 
     @Test(
             groups = {"regression", "user"},

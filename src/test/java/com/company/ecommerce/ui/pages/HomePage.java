@@ -6,11 +6,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
 import java.util.List;
 
 public class HomePage extends BasePage {
@@ -72,7 +69,7 @@ public class HomePage extends BasePage {
     // 构造器
     public HomePage(WebDriver driver) {
         super(driver);
-        PageFactory.initElements(driver, this);
+//        PageFactory.initElements(driver, this);
         waitForPageToLoad();
     }
 
@@ -80,7 +77,7 @@ public class HomePage extends BasePage {
     public boolean isHomePageLoaded() {
         try {
             return isDisplayed(logo) &&
-                    driver.getCurrentUrl().contains(ConfigManager.getInstance().getAppUrl());
+                    driver.getCurrentUrl().contains(ConfigManager.getInstance().getWebBaseUrl());
         } catch (Exception e) {
             return false;
         }
@@ -145,7 +142,7 @@ public class HomePage extends BasePage {
         click(logoutLink);
 
         // 等待重定向到登录页
-        waitForUrlContains("login", 5);
+        waitForUrlContains("login");
 
         return new LoginPage(driver);
     }
@@ -206,7 +203,7 @@ public class HomePage extends BasePage {
 
     // 辅助方法
     private void waitForPageToLoad() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+//        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOf(logo));
     }
 
@@ -241,38 +238,8 @@ public class HomePage extends BasePage {
     }
 
     // 从BasePage继承或新增的辅助方法
-    private boolean isDisplayed(WebElement element) {
-        try {
-            return element.isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
-    }
 
-    private void click(WebElement element) {
-        try {
-            element.click();
-        } catch (Exception e) {
-            throw new RuntimeException("无法点击元素: " + e.getMessage());
-        }
-    }
-
-    public void clearAndType(WebElement element, String text) {
-        try {
-            element.clear();
-            element.sendKeys(text);
-        } catch (Exception e) {
-            throw new RuntimeException("无法在元素中输入文本: " + e.getMessage());
-        }
-    }
-
-    public void waitForElementToBeVisible(WebElement element) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOf(element));
-    }
-
-    private void waitForUrlContains(String text, int seconds) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(seconds));
+    private void waitForUrlContains(String text) {
         wait.until(ExpectedConditions.urlContains(text));
     }
 

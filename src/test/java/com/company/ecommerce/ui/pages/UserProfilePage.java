@@ -8,7 +8,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-import static com.company.ecommerce.utils.WebDriverManager.*;
+import com.company.ecommerce.utils.WebDriverManagerUtil;
 
 public class UserProfilePage extends BasePage {
 

@@ -2,7 +2,7 @@
 package com.company.ecommerce.base;
 
 import com.company.ecommerce.config.ConfigManager;
-import com.company.ecommerce.utils.WebDriverManager;
+import com.company.ecommerce.utils.WebDriverManagerUtil;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITestResult;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.time.Duration;
 
-public class BaseUITest {
+public class BaseUITest extends BaseTest{
 
     protected WebDriver driver;
     protected WebDriverWait wait;
@@ -25,7 +25,12 @@ public class BaseUITest {
     public void setupSuite() {
 //        RestAssured.baseURI = ConfigManager.getApiBaseUrl();
 //        RestAssured.basePath = ConfigManager.getApiBasePath();
-        baseUrl = ConfigManager.getInstance().getApiBaseUrl();
+        baseUrl = ConfigManager.getInstance().getWebBaseUrl();
+    }
+
+    @BeforeClass
+    public void setupClass() {
+//        driver = WebDriverManagerUtil.getDriver();
     }
 
     @BeforeMethod
@@ -35,10 +40,10 @@ public class BaseUITest {
         System.out.println("=== Starting test: " + testName + " ===");
 
         // 初始化WebDriver
-        driver = WebDriverManager.getDriver();
+        driver = WebDriverManagerUtil.getDriver();
 
         // 设置等待时间
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+//        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         // 最大化窗口
         driver.manage().window().maximize();
@@ -66,7 +71,8 @@ public class BaseUITest {
 
         // 关闭浏览器
         if (driver != null) {
-            driver.quit();
+            WebDriverManagerUtil.quitDriver();
+//            driver.quit();
         }
         System.out.println("=== Finished test: " + testName + " ===\n");
     }
@@ -101,36 +107,5 @@ public class BaseUITest {
         }
     }
 
-    /**
-     * 导航到指定URL
-     * @param url 目标URL
-     */
-    protected void navigateTo(String url) {
-        driver.get(url);
-    }
 
-    /**
-     * 等待页面加载完成
-     */
-    protected void waitForPageLoad() {
-        wait.until(webDriver ->
-                ((org.openqa.selenium.JavascriptExecutor) webDriver)
-                        .executeScript("return document.readyState").equals("complete"));
-    }
-
-    /**
-     * 获取当前URL
-     * @return 当前URL
-     */
-    protected String getCurrentUrl() {
-        return driver.getCurrentUrl();
-    }
-
-    /**
-     * 获取页面标题
-     * @return 页面标题
-     */
-    protected String getPageTitle() {
-        return driver.getTitle();
-    }
 }

@@ -3,13 +3,8 @@ package com.company.ecommerce.base;
 import com.company.ecommerce.config.ConfigManager;
 import com.company.ecommerce.listeners.AllureTestListener;
 import com.company.ecommerce.reporters.AllureManager;
-import com.company.ecommerce.utils.APIUtils;
 import com.company.ecommerce.utils.DatabaseManager;
-import com.company.ecommerce.utils.testdata.TestDataUtils;
-import com.company.ecommerce.utils.WebDriverManager;
 import io.qameta.allure.SeverityLevel;
-import io.restassured.response.Response;
-import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
@@ -21,10 +16,10 @@ import java.lang.reflect.Method;
 public abstract class BaseTest {
 
     protected static final Logger logger = LoggerFactory.getLogger(BaseTest.class);
-    protected WebDriver driver;
+//    protected WebDriver driver;
     protected DatabaseManager dbManager;
-    protected APIUtils apiUtils;
-    protected TestDataUtils testDataUtils;
+//    protected APIUtils apiUtils;
+//    protected TestDataUtils testDataUtils;
     protected static String hmacSha1Algorithm = "HmacSHA1";
     protected static String secretKey;
     protected static String appId;
@@ -41,7 +36,7 @@ public abstract class BaseTest {
         logger.info("=========================================");
         logger.info("Starting Test Suite");
         logger.info("Environment: {}", ConfigManager.getInstance().getEnvironmentName());
-        logger.info("App URL: {}", ConfigManager.getInstance().getAppUrl());
+        logger.info("App URL: {}", ConfigManager.getInstance().getWebBaseUrl());
         logger.info("API URL: {}", ConfigManager.getInstance().getApiBaseUrl());
         logger.info("=========================================");
 
@@ -55,7 +50,7 @@ public abstract class BaseTest {
     @BeforeTest(alwaysRun = true)
     public void testSetup() {
         logger.info("Setting up test environment...");
-        testDataUtils = new TestDataUtils();
+//        testDataUtils = new TestDataUtils();
     }
 
     @BeforeClass(alwaysRun = true)
@@ -83,17 +78,17 @@ public abstract class BaseTest {
             dbManager.connect();
         }
 
-        // 检查是否需要 API 工具
-        if (requiresAPI()) {
-            logger.info("初始化 API 工具...");
-            apiUtils = new APIUtils();
-        }
-
-        // 检查是否需要 WebDriver
-        if (requiresBrowser()) {
-            logger.info("初始化 WebDriver...");
-            // WebDriver 在 @BeforeMethod 中初始化
-        }
+//        // 检查是否需要 API 工具
+//        if (requiresAPI()) {
+//            logger.info("初始化 API 工具...");
+//            apiUtils = new APIUtils();
+//        }
+//
+//        // 检查是否需要 WebDriver
+//        if (requiresBrowser()) {
+//            logger.info("初始化 WebDriver...");
+//            // WebDriver 在 @BeforeMethod 中初始化
+//        }
     }
 
     @BeforeMethod(alwaysRun = true)
@@ -106,13 +101,13 @@ public abstract class BaseTest {
             setupAllureForMethod(method);
         }
 
-        // 初始化 WebDriver（如果需要）
-        if (requiresBrowser()) {
-            driver = WebDriverManager.getDriver();
-            if (driver != null) {
-                logger.info("浏览器已初始化: {}", ConfigManager.getInstance().getBrowserName());
-            }
-        }
+//        // 初始化 WebDriver（如果需要）
+//        if (requiresBrowser()) {
+//            driver = WebDriverManager.getDriver();
+//            if (driver != null) {
+//                logger.info("浏览器已初始化: {}", ConfigManager.getInstance().getBrowserName());
+//            }
+//        }
     }
 
     /**
@@ -188,17 +183,17 @@ public abstract class BaseTest {
             case ITestResult.FAILURE:
                 logger.error("❌ 测试失败: {}", testName, result.getThrowable());
 
-                // 失败时截图并添加到 Allure
-                if (driver != null && ConfigManager.getInstance().isScreenshotOnFailure()) {
-                    try {
-                        byte[] screenshot = AllureManager.addScreenshot(driver, "失败截图");
-                        if (screenshot.length > 0) {
-                            logger.info("失败截图已添加到报告");
-                        }
-                    } catch (Exception e) {
-                        logger.warn("截图失败: {}", e.getMessage());
-                    }
-                }
+//                // 失败时截图并添加到 Allure
+//                if (driver != null && ConfigManager.getInstance().isScreenshotOnFailure()) {
+//                    try {
+//                        byte[] screenshot = AllureManager.addScreenshot(driver, "失败截图");
+//                        if (screenshot.length > 0) {
+//                            logger.info("失败截图已添加到报告");
+//                        }
+//                    } catch (Exception e) {
+//                        logger.warn("截图失败: {}", e.getMessage());
+//                    }
+//                }
 
                 // 添加错误信息到 Allure
                 if (result.getThrowable() != null) {
@@ -220,11 +215,11 @@ public abstract class BaseTest {
      * 清理资源
      */
     private void cleanupResources() {
-        // 关闭浏览器
-        if (driver != null) {
-            WebDriverManager.quitDriver();
-            driver = null;
-        }
+//        // 关闭浏览器
+//        if (driver != null) {
+//            WebDriverManager.quitDriver();
+//            driver = null;
+//        }
 
         // 注意：不在这里关闭 dbManager 和 apiUtils，
         // 因为它们可能需要在多个测试方法间复用
@@ -240,19 +235,19 @@ public abstract class BaseTest {
             dbManager = null;
         }
 
-        // 关闭 API 工具
-        if (apiUtils != null) {
-            apiUtils.close();
-            apiUtils = null;
-        }
+//        // 关闭 API 工具
+//        if (apiUtils != null) {
+//            apiUtils.close();
+//            apiUtils = null;
+//        }
     }
 
     @AfterTest(alwaysRun = true)
     public void testCleanup() {
         logger.info("Cleaning up test resources...");
-        if (testDataUtils != null) {
-            testDataUtils.cleanup();
-        }
+//        if (testDataUtils != null) {
+//            testDataUtils.cleanup();
+//        }
     }
 
     @AfterSuite(alwaysRun = true)
@@ -271,19 +266,19 @@ public abstract class BaseTest {
         return false;
     }
 
-    /**
-     * 检测是否需要 API 工具（子类可重写）
-     */
-    protected boolean requiresAPI() {
-        return false;
-    }
+//    /**
+//     * 检测是否需要 API 工具（子类可重写）
+//     */
+//    protected boolean requiresAPI() {
+//        return false;
+//    }
 
-    /**
-     * 检测是否需要浏览器（子类可重写）
-     */
-    protected boolean requiresBrowser() {
-        return false;
-    }
+//    /**
+//     * 检测是否需要浏览器（子类可重写）
+//     */
+//    protected boolean requiresBrowser() {
+//        return false;
+//    }
 
     // ========== 便捷方法 ==========
 
@@ -297,54 +292,54 @@ public abstract class BaseTest {
         return dbManager.queryForObject(sql, params);
     }
 
-    /**
-     * 执行 API 调用的便捷方法
-     */
-    protected Response callApi2(String method, String endpoint, Object body) {
-        if (apiUtils == null) {
-            throw new IllegalStateException("APIUtils 未初始化，请先设置 requiresAPI() 返回 true");
-        }
-
-        switch (method.toUpperCase()) {
-            case "GET":
-                return apiUtils.get(endpoint);
-            case "POST":
-                return apiUtils.post(endpoint, body);
-            case "PUT":
-                return apiUtils.put(endpoint, body);
-            case "DELETE":
-                return apiUtils.delete(endpoint);
-            case "PATCH":
-                return apiUtils.patch(endpoint, body);
-            default:
-                throw new IllegalArgumentException("不支持的 HTTP 方法: " + method);
-        }
-    }
-
-    /**
-     * Allure 步骤：调用 API
-     */
-    protected Response callApi(String method, String endpoint, Object body) {
-        return AllureManager.addManualStep(String.format("调用 %s API: %s", method, endpoint), () -> {
-            if (apiUtils == null) {
-                throw new IllegalStateException("APIUtils 未初始化");
-            }
-
-            switch (method.toUpperCase()) {
-                case "GET":
-                    return apiUtils.get(endpoint);
-                case "POST":
-                    return apiUtils.post(endpoint, body);
-                case "PUT":
-                    return apiUtils.put(endpoint, body);
-                case "DELETE":
-                    return apiUtils.delete(endpoint);
-                case "PATCH":
-                    return apiUtils.patch(endpoint, body);
-                default:
-                    throw new IllegalArgumentException("不支持的 HTTP 方法: " + method);
-            }
-        });
-    }
+//    /**
+//     * 执行 API 调用的便捷方法
+//     */
+//    protected Response callApi2(String method, String endpoint, Object body) {
+//        if (apiUtils == null) {
+//            throw new IllegalStateException("APIUtils 未初始化，请先设置 requiresAPI() 返回 true");
+//        }
+//
+//        switch (method.toUpperCase()) {
+//            case "GET":
+//                return apiUtils.get(endpoint);
+//            case "POST":
+//                return apiUtils.post(endpoint, body);
+//            case "PUT":
+//                return apiUtils.put(endpoint, body);
+//            case "DELETE":
+//                return apiUtils.delete(endpoint);
+//            case "PATCH":
+//                return apiUtils.patch(endpoint, body);
+//            default:
+//                throw new IllegalArgumentException("不支持的 HTTP 方法: " + method);
+//        }
+//    }
+//
+//    /**
+//     * Allure 步骤：调用 API
+//     */
+//    protected Response callApi(String method, String endpoint, Object body) {
+//        return AllureManager.addManualStep(String.format("调用 %s API: %s", method, endpoint), () -> {
+//            if (apiUtils == null) {
+//                throw new IllegalStateException("APIUtils 未初始化");
+//            }
+//
+//            switch (method.toUpperCase()) {
+//                case "GET":
+//                    return apiUtils.get(endpoint);
+//                case "POST":
+//                    return apiUtils.post(endpoint, body);
+//                case "PUT":
+//                    return apiUtils.put(endpoint, body);
+//                case "DELETE":
+//                    return apiUtils.delete(endpoint);
+//                case "PATCH":
+//                    return apiUtils.patch(endpoint, body);
+//                default:
+//                    throw new IllegalArgumentException("不支持的 HTTP 方法: " + method);
+//            }
+//        });
+//    }
 
 }
