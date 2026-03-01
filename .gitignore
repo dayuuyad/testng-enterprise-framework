@@ -27,6 +27,7 @@ bin/
 
 # Test results
 test-results/
+test-output/
 #test-results/screenshots/*.png
 #test-results/html-reports/*
 #!test-results/html-reports/.gitkeep

@@ -39,8 +39,8 @@ public class AllureManager {
      */
     public static void initAllure() {
         // 设置环境变量
-        System.setProperty("allure.results.directory", "test-results/allure-results");
-        System.setProperty("allure.report.directory", "test-results/allure-report");
+        System.setProperty("allure.results.directory", "target/allure-results");
+        System.setProperty("allure.report.directory", "target/allure-report");
 
         // 设置 Allure 环境信息
         setEnvironmentInfo();
@@ -66,7 +66,7 @@ public class AllureManager {
                 """;
 
             Files.write(
-                    Paths.get("test-results/allure-results/environment.properties"),
+                    Paths.get("target/allure-results/environment.properties"),
                     envContent.getBytes()
             );
         } catch (IOException e) {
@@ -350,7 +350,7 @@ public class AllureManager {
      */
     public static void cleanupResults() {
         try {
-            File resultsDir = new File("test-results/allure-results");
+            File resultsDir = new File("target/allure-results");
             if (resultsDir.exists()) {
                 deleteDirectory(resultsDir);
                 logger.info("清理 Allure 结果目录");
@@ -384,10 +384,10 @@ public class AllureManager {
 
             if (System.getProperty("os.name").toLowerCase().contains("win")) {
                 // Windows
-                builder.command("cmd.exe", "/c", "allure generate test-results/allure-results -o test-results/allure-report --clean");
+                builder.command("cmd.exe", "/c", "allure generate target/allure-results -o target/allure-report --clean");
             } else {
                 // Linux/Mac
-                builder.command("bash", "-c", "allure generate test-results/allure-results -o test-results/allure-report --clean");
+                builder.command("bash", "-c", "allure generate target/allure-results -o target/allure-report --clean");
             }
 
             Process process = builder.start();
@@ -395,7 +395,7 @@ public class AllureManager {
 
             if (exitCode == 0) {
                 logger.info("✅ Allure 报告生成成功");
-                logger.info("报告路径: file://" + new File("test-results/allure-report/index.html").getAbsolutePath());
+                logger.info("报告路径: file://" + new File("target/allure-report/index.html").getAbsolutePath());
             } else {
                 logger.error("❌ Allure 报告生成失败，退出码: {}", exitCode);
             }
@@ -413,7 +413,7 @@ public class AllureManager {
             logger.info("打开 Allure 报告...");
 
             ProcessBuilder builder = new ProcessBuilder();
-            String reportPath = new File("test-results/allure-report/index.html").getAbsolutePath();
+            String reportPath = new File("target/allure-report/index.html").getAbsolutePath();
 
             if (System.getProperty("os.name").toLowerCase().contains("win")) {
                 // Windows

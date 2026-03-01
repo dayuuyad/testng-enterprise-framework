@@ -24,16 +24,19 @@ public class ContractListTests extends BaseUITest {
 
 
     @Test(dataProvider = "uicaseData", dataProviderClass = TestDataProvider.class)
-    public void testSearch(String searchMapString,String expectedText ) throws JsonProcessingException {
+    public void testSearch(String searchMapString,String expectedMapString ) throws JsonProcessingException {
         // 转换为 Map<String, String>
         Map<String, String> searchMap = new ObjectMapper().readValue(searchMapString, new TypeReference<Map<String, String>>() {});
         contractListPage.navigateTo();
         contractListPage.searchByMap(searchMap);
-        try {
-            sleep(3000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            sleep(3000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+        Map<String, String> expectedMap = new ObjectMapper().readValue(expectedMapString, new TypeReference<Map<String, String>>() {});
+
+        contractListPage.assertByMap(expectedMap);
     }
 
 }

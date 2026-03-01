@@ -6,6 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +44,11 @@ public class ContractListPage extends BasePage {
     @FindBy(xpath = "(//tbody)[1]")
     private WebElement tableBody;
 
-    // 表格行
-    @FindBy(xpath = "(//tbody)[1]/tr")
-    private List<WebElement> tableRows;
+//    // 表格行
+//    @FindBy(xpath = "(//tbody)/tr")
+//    private List<WebElement> tableRows;
+
+    private String tableRowsXpath = "./tr";
 
     // 分页信息
     @FindBy(className = "pagination-info")
@@ -55,22 +58,31 @@ public class ContractListPage extends BasePage {
     @FindBy(className = "no-data")
     private WebElement noDataMessage;
 
-    private Map<String, WebElement> webElementMaps;
+    private Map<String, WebElement> searchWebElementMaps;
 
+    private Map<String, String> resultMaps;
 
     // 构造器
     public ContractListPage(WebDriver driver) {
         super(driver);
-        webElementMaps = MapUtil.<String, WebElement>builder()
+        searchWebElementMaps = MapUtil.<String, WebElement>builder()
                 .put("合同名称",contractName)
                 .put("发起人",contractCreate)
                 .put("签署人手机号",signeePhoneNumber)
                 .put("合同编号",contractNum)
                 .build();
+
+        resultMaps =MapUtil.<String,String>builder()
+                .put("合同名称","")
+                .put("合同名称","")
+                .put("合同名称","")
+                .put("合同名称","")
+                .build();
     }
 
 
 
+    //    public void searchByMap(Map<String, String> map) {
     public void searchByMap(Map<String, String> map) {
         waitToClick(expandButton);
         //expandButton.click();
@@ -81,12 +93,55 @@ public class ContractListPage extends BasePage {
                         By.xpath("//div[contains(text(),'"+value+"')]")
                 ).click();
             }
-            type(webElementMaps.get(key),value,key);
+            type(searchWebElementMaps.get(key),value,key);
         });
         searchButton.click();
     }
 
+    public void assertByMap(Map<String, String> map) {
+        List<WebElement> tableRows = tableBody.findElements(By.xpath(tableRowsXpath));
+//        waitToClick(expandButton);
+        for (WebElement webElement : tableRows) {
+            //滚动到元素位置
+            executeJavaScript("arguments[0].scrollIntoView({block: 'center'});", webElement);
+            map.forEach((key, value) -> {
+                switch (key) {
+                    case "合同名称" :
+                        String contractName = webElement.findElement(By.xpath("./td[1]/div/a")).getText();
+//                        System.out.println(contractName);
+                        Assert.assertEquals(contractName,value);
+                        break;
+                    case "合同编号" :
+                        WebElement NOButton = webElement.findElement(By.xpath("./td[1]/div/div/span[text()='NO.']"));
+                        waitToClick(NOButton);
+//                        String NO = driver.findElement(By.id(NOButton.getAttribute("aria-describedby"))).getText();
 
+//                        String NO = waitForElementToBePresence(By.id(NOButton.getAttribute("aria-describedby"))).getText();
+                        String NO = waitForElementToBeVisible(driver.findElement(By.id(NOButton.getAttribute("aria-describedby")))).getText();
+
+                        System.out.println(NO);
+                        Assert.assertEquals(NO,value);
+
+                        break;
+
+                }
+                    });
+//
+//            WebElement IDButton = webElement.findElement(By.xpath("./td[1]/div/div/span[text()='ID.']"));
+//            waitToClick(IDButton);
+////            System.out.println(IDButton.getAttribute("aria-describedby"));
+//            try {
+//                Thread.sleep(1000); // 等待tooltip出现
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//            String ID = driver.findElement(By.id(IDButton.getAttribute("aria-describedby"))).getText();
+//
+//            System.out.println(ID);
+////            executeJavaScript("arguments[0].click();", IDButton);
+
+        }
+    }
 
     // 页面操作方法
     public void navigateTo() {
@@ -161,6 +216,8 @@ public class ContractListPage extends BasePage {
      * 获取搜索结果数量
      */
     public int getSearchResultCount() {
+        List<WebElement> tableRows = tableBody.findElements(By.xpath(tableRowsXpath));
+
         wait.until(ExpectedConditions.visibilityOfAllElements(tableRows));
         return tableRows.size();
     }

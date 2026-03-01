@@ -343,7 +343,7 @@
                         <environment>qa</environment>
                         <browser>chrome</browser>
                         <headless>false</headless>
-                        <allure.results.directory>${project.basedir}/test-results/allure-results</allure.results.directory>
+                        <allure.results.directory>${project.basedir}/target/allure-results</allure.results.directory>
                     </systemPropertyVariables>
                     <argLine>
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
@@ -359,7 +359,7 @@
                     <perCoreThreadCount>true</perCoreThreadCount>
                     <reuseForks>true</reuseForks>
                     <forkCount>3</forkCount>
-                    <reportsDirectory>${project.basedir}/test-results/xml-reports</reportsDirectory>
+                    <reportsDirectory>${project.basedir}/target/xml-reports</reportsDirectory>
                     <properties>
                         <property>
                             <name>usedefaultlisteners</name>
@@ -376,8 +376,8 @@
                 <version>2.12.0</version>
                 <configuration>
                     <reportVersion>${allure.version}</reportVersion>
-                    <resultsDirectory>${project.basedir}/test-results/allure-results</resultsDirectory>
-                    <reportDirectory>${project.basedir}/test-results/allure-report</reportDirectory>
+                    <resultsDirectory>${project.basedir}/target/allure-results</resultsDirectory>
+                    <reportDirectory>${project.basedir}/target/allure-report</reportDirectory>
                 </configuration>
             </plugin>
 

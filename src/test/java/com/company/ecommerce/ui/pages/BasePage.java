@@ -94,8 +94,18 @@ public abstract class BasePage {
      * 等待元素可见
      * @param element 元素
      */
-    protected void waitForElementToBeVisible(WebElement element) {
-        wait.until(ExpectedConditions.visibilityOf(element));
+    protected WebElement waitForElementToBeVisible(WebElement element) {
+        return wait.until(ExpectedConditions.visibilityOf(element));
+    }
+
+    /**
+     * 等待元素出现
+     * @param locator 元素
+     */
+    protected WebElement  waitForElementToBePresence(By locator ) {
+        return wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+//        return wait.until(driver -> driver.findElement(By.id("btn")));
+
     }
 
     /**
