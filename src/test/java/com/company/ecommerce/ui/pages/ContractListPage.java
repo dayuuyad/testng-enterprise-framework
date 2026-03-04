@@ -84,6 +84,7 @@ public class ContractListPage extends BasePage {
 
     //    public void searchByMap(Map<String, String> map) {
     public void searchByMap(Map<String, String> map) {
+        waitElementLocatedInvisibility();
         waitToClick(expandButton);
         //expandButton.click();
         map.forEach((key, value) -> {
@@ -105,27 +106,28 @@ public class ContractListPage extends BasePage {
             //滚动到元素位置
             executeJavaScript("arguments[0].scrollIntoView({block: 'center'});", webElement);
             map.forEach((key, value) -> {
-                switch (key) {
-                    case "合同名称" :
-                        String contractName = webElement.findElement(By.xpath("./td[1]/div/a")).getText();
+                        switch (key) {
+                            case "合同名称" :
+                                String contractName = webElement.findElement(By.xpath("./td[1]/div/a")).getText();
 //                        System.out.println(contractName);
-                        Assert.assertEquals(contractName,value);
-                        break;
-                    case "合同编号" :
-                        WebElement NOButton = webElement.findElement(By.xpath("./td[1]/div/div/span[text()='NO.']"));
-                        waitToClick(NOButton);
+                                Assert.assertEquals(contractName,value);
+                                break;
+                            case "合同编号" :
+                                WebElement NOButton = webElement.findElement(By.xpath("./td[1]/div/div/span[text()='NO.']"));
+                                waitToClick(NOButton);
 //                        String NO = driver.findElement(By.id(NOButton.getAttribute("aria-describedby"))).getText();
 
 //                        String NO = waitForElementToBePresence(By.id(NOButton.getAttribute("aria-describedby"))).getText();
-                        String NO = waitForElementToBeVisible(driver.findElement(By.id(NOButton.getAttribute("aria-describedby")))).getText();
+                                String NO = waitForElementToBeVisible(driver.findElement(By.id(NOButton.getAttribute("aria-describedby")))).getText();
 
-                        System.out.println(NO);
-                        Assert.assertEquals(NO,value);
+                                System.out.println(NO);
+                                Assert.assertEquals(NO,value);
 
-                        break;
+                                break;
 
-                }
-                    });
+                        }
+                    }
+            );
 //
 //            WebElement IDButton = webElement.findElement(By.xpath("./td[1]/div/div/span[text()='ID.']"));
 //            waitToClick(IDButton);

@@ -4,6 +4,7 @@ package com.company.ecommerce.ui.pages;
 import com.company.ecommerce.config.ConfigManager;
 import com.company.ecommerce.utils.WebDriverManagerUtil;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -19,14 +20,22 @@ public abstract class BasePage {
     protected WebDriverWait wait;
     protected static final Logger logger = LoggerFactory.getLogger(BasePage.class);
     protected String cookieStr;
+    protected Actions actions;
 
     public BasePage(WebDriver driver) {
         this.driver = driver;
 //        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         this.wait = WebDriverManagerUtil.getWait();
         this.cookieStr = ConfigManager.getInstance().getCookieStr();
+        this.actions = new Actions(driver);
         PageFactory.initElements(driver, this);
     }
+
+    public BasePage(WebDriver driver, String cookieStr) {
+        this(driver);
+        this.cookieStr = cookieStr;
+    }
+
 
     protected void click(WebElement element) {
         logger.info("点击元素: {}", element.getText());
@@ -91,6 +100,13 @@ public abstract class BasePage {
     }
 
     /**
+     * 等待遮罩消失
+     */
+    protected void waitElementLocatedInvisibility() {
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("el-loading-spinner")));
+    }
+
+    /**
      * 等待元素可见
      * @param element 元素
      */
@@ -105,7 +121,6 @@ public abstract class BasePage {
     protected WebElement  waitForElementToBePresence(By locator ) {
         return wait.until(ExpectedConditions.presenceOfElementLocated(locator));
 //        return wait.until(driver -> driver.findElement(By.id("btn")));
-
     }
 
     /**
@@ -138,7 +153,7 @@ public abstract class BasePage {
     /**
      * 等待页面加载完成
      */
-    protected void waitForPageLoad() {
+    public void waitForPageLoad() {
         wait.until(webDriver ->
                 ((JavascriptExecutor) webDriver)
                         .executeScript("return document.readyState").equals("complete"));
@@ -153,6 +168,30 @@ public abstract class BasePage {
     protected Object executeJavaScript(String script, Object... args) {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         return js.executeScript(script, args);
+    }
+
+    /**
+     * 滚动到元素位置
+     */
+    protected void rollToWebElement(WebElement element) {
+        executeJavaScript("arguments[0].scrollIntoView({block: 'center'});", element);
+
+    }
+
+    /**
+     * 拖动元素
+     */
+    protected void dragWebElement(WebElement sourceElement,WebElement targetElement) {
+//        actions.dragAndDrop(sourceElement, targetElement).perform();
+        actions.clickAndHold(sourceElement)
+                .pause(500)  // 等待500ms
+                .moveByOffset(50, 0)  // 先移动一小段距离
+                .pause(200)
+                .moveToElement(targetElement)
+                .pause(500)
+                .release()
+                .build()
+                .perform();
     }
 
     /**
