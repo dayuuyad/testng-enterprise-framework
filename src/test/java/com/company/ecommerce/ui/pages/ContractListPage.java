@@ -1,6 +1,7 @@
 package com.company.ecommerce.ui.pages;
 
 import cn.hutool.core.map.MapUtil;
+import com.company.ecommerce.utils.JsonUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -50,6 +51,9 @@ public class ContractListPage extends BasePage {
 
     private String tableRowsXpath = "./tr";
 
+    @FindBy(xpath = "//tbody//td[@class='el-table_1_column_6 is-left  el-table__cell']//span[normalize-space(text())='签署']")
+    private List<WebElement> signButtons;
+
     // 分页信息
     @FindBy(className = "pagination-info")
     private WebElement paginationInfo;
@@ -83,8 +87,9 @@ public class ContractListPage extends BasePage {
 
 
     //    public void searchByMap(Map<String, String> map) {
-    public void searchByMap(Map<String, String> map) {
-        waitElementLocatedInvisibility();
+    public void searchByMap(String jsonString) {
+        Map<String, String> map = JsonUtils.jsonStringToMap(jsonString);
+        waitForLoadingComplete();
         waitToClick(expandButton);
         //expandButton.click();
         map.forEach((key, value) -> {
@@ -93,14 +98,19 @@ public class ContractListPage extends BasePage {
                 driver.findElement(
                         By.xpath("//div[contains(text(),'"+value+"')]")
                 ).click();
+                waitForLoadingComplete();
+            }else {
+                type(searchWebElementMaps.get(key),value,key);
             }
-            type(searchWebElementMaps.get(key),value,key);
         });
         searchButton.click();
     }
 
-    public void assertByMap(Map<String, String> map) {
-        List<WebElement> tableRows = tableBody.findElements(By.xpath(tableRowsXpath));
+    public void assertByMap(String jsonString) {
+        Map<String, String> map = JsonUtils.jsonStringToMap(jsonString);
+
+//        List<WebElement> tableRows = tableBody.findElements(By.xpath(tableRowsXpath));
+        List<WebElement> tableRows = getSearchResult();
 //        waitToClick(expandButton);
         for (WebElement webElement : tableRows) {
             //滚动到元素位置
@@ -145,7 +155,37 @@ public class ContractListPage extends BasePage {
         }
     }
 
-    // 页面操作方法
+    public SignContractPage goSign(String jsonString) {
+        searchByMap(jsonString);
+        List<WebElement> tableRows = getSearchResult();
+        // 增加空结果判断
+        if (tableRows == null || tableRows.isEmpty()) {
+            throw new RuntimeException("未查询到符合条件的合同，查询条件：" + JsonUtils.toPrettyJson(jsonString));
+        }
+        WebElement signButton = signButtons.get(0);
+        //滚动到查询列表行
+        rollToWebElement(signButton);
+//        String contractName = tableRow.findElement(By.xpath("./td[1]/div/a")).getText();
+//        rollToWebElement(signButton);
+
+//        signButton = driver.findElement(By.xpath("        //*[@id=\"el-scrollbar\"]/div[1]/div/div/div/div[3]/div[2]/div[1]/div[4]/div[2]/table/tbody/tr[1]/td[5]/div/div/span[1]"));
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        signButton.click();
+
+        return new SignContractPage(driver);
+    }
+
+    private List<WebElement> getSearchResult(){
+        return tableBody.findElements(By.xpath(tableRowsXpath));
+    }
+
+
+        // 页面操作方法
     public void navigateTo() {
         navigateTo("#/subview/contractweb/contractManage/contractList");
 //        waitForPageLoad();

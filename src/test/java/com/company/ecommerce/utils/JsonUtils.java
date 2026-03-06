@@ -1,6 +1,8 @@
 package com.company.ecommerce.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.restassured.response.Response;
@@ -18,6 +20,15 @@ public class JsonUtils {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         // 处理空对象
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+    }
+
+    public static Map<String, String> jsonStringToMap(String jsonString) {
+        try {
+            return new ObjectMapper().readValue(jsonString, new TypeReference<Map<String, String>>() {});
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public static String toPrettyJson(Object object) {

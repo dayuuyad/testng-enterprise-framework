@@ -28,15 +28,15 @@ public class ContractListTests extends BaseUITest {
         // 转换为 Map<String, String>
         Map<String, String> searchMap = new ObjectMapper().readValue(searchMapString, new TypeReference<Map<String, String>>() {});
         contractListPage.navigateTo();
-        contractListPage.searchByMap(searchMap);
+        contractListPage.searchByMap(searchMapString);
 //        try {
 //            sleep(3000);
 //        } catch (InterruptedException e) {
 //            throw new RuntimeException(e);
 //        }
-        Map<String, String> expectedMap = new ObjectMapper().readValue(expectedMapString, new TypeReference<Map<String, String>>() {});
+//        Map<String, String> expectedMap = new ObjectMapper().readValue(expectedMapString, new TypeReference<Map<String, String>>() {});
 
-        contractListPage.assertByMap(expectedMap);
+        contractListPage.assertByMap(expectedMapString);
     }
 
 }

@@ -1,6 +1,5 @@
 package com.company.ecommerce.ui.pages;
 
-import cn.hutool.core.map.MapUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -30,7 +29,7 @@ public class SendContractPage extends BasePage {
     }
 
     public ContractListPage sendContract () {
-        waitElementLocatedInvisibility();
+        waitForLoadingComplete();
         rollToWebElement(divSeal);
         waitForElementToBePresence(By.id("canvas_render0"));
 //        waitForElementToBeVisible(contractDocument);

@@ -102,7 +102,7 @@ public abstract class BasePage {
     /**
      * 等待遮罩消失
      */
-    protected void waitElementLocatedInvisibility() {
+    protected void waitForLoadingComplete() {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("el-loading-spinner")));
     }
 
@@ -175,6 +175,7 @@ public abstract class BasePage {
      */
     protected void rollToWebElement(WebElement element) {
         executeJavaScript("arguments[0].scrollIntoView({block: 'center'});", element);
+//        executeJavaScript("arguments[0].scrollIntoView(true);", element);
 
     }
 
